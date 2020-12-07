@@ -5,10 +5,6 @@
  * @return {Objtct}        Output Standard Options
  */
 export default (list = [], options = {}) => {
-  const optionsKeys = Object.keys(options);
-  return list.reduce(
-    (acc, cur) =>
-      optionsKeys.includes(cur) ? { ...acc, [cur]: options[cur] } : acc,
-    {}
-  );
-};
+  const optionsKeys = Object.keys(options)
+  return list.reduce((acc, cur) => (optionsKeys.includes(cur) ? { ...acc, [cur]: options[cur] } : acc), {})
+}

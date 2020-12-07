@@ -1,55 +1,52 @@
-import merge from "lodash/merge.js";
-import { cleanOptions, compose, normalizeUrl, timeout } from "./utils/index.js";
+import { compose, typeOf, normalizeUrl, timeout, formatMethod, transformParams, transformBody } from './utils/index.js'
+
+export const CancelToken = () => {}
 
 export default class Yici {
   constructor(options = {}) {
-    this.options = options;
-    this.middleware = [];
-    this.fetch = options.fetch || fetch;
-    this.timeout = options.timeout || 0;
-    this.retry = false;
-    this.limit = 1;
-    this.ResponseType = options.ResponseType || "json";
-    /**
-     * List of initial options supported by Fetch
-     * Reference: https://developer.mozilla.org/zh-CN/docs/Web/API/WindowOrWorkerGlobalScope/fetch
-     */
-    this.optionsList = [
-      "method",
-      "headers",
-      "body",
-      "mode",
-      "credentials",
-      "cache",
-      "redirect",
-      "referrer",
-      "referrerPolicy",
-      "integrity",
-    ];
+    this.options = options
+    this.middleware = []
+    this.baseURL = options.baseURL || ''
+    this.fetch = options.fetch || window.fetch
+    this.timeout = options.timeout || 0
+    this.retry = false
+    this.limit = 1
+    this.ResponseType = options.ResponseType || 'json'
+    this.methods = ['GET', 'PUT', 'HEAD', 'DELETE', 'OPTIONS', 'PATCH']
   }
 
   use(...args) {
-    this.middleware = [...this.middleware, ...args];
-    return this;
+    this.middleware = [...this.middleware, ...args]
+    return this
   }
 
-  async adapter([url, options]) {
-    options.url && (url = normalizeUrl(options.baseURL + options.url));
-    options = cleanOptions(this.optionsList, merge(this.options, options));
-    const res = await timeout(this.fetch(url, options), this.timeout, url);
-    return res[this.ResponseType]();
+  async adapter(request) {
+    const response = await timeout(window.fetch(request), this.timeout, request.url)
+
+    if (!response.ok) throw new Error(response.statusText)
+    return { ...response, data: response[this.ResponseType]() }
   }
 
-  request(...args) {
-    const dispatch = compose(this.middleware);
-    return dispatch(this.adapter.bind(this))(args);
+  request({ url, data, method, ...options }) {
+    console.log(url, data, method, options)
+
+    url = normalizeUrl(this.baseURL + url)
+    options = { ...this.options, ...options, method }
+    method = formatMethod(method)
+
+    if (method === 'GET' && typeOf(data) === 'Object') url = transformParams(data)
+    if (method === 'POST' && typeOf(data) === 'Object') options = { ...options, body: transformBody(data) }
+    const request = new Request(url, options)
+
+    const dispatch = compose(this.middleware)
+    return dispatch(this.adapter.bind(this))(request)
   }
 
-  get(url, params, options = {}) {
-    return this.request(url, { body: params, ...options, method: "GET" });
+  get(url, data, options = {}) {
+    return this.request({ ...options, url, data, method: 'GET' })
   }
 
-  post(url, body, options = {}) {
-    return this.request(url, { body, ...options, method: "POST" });
+  post(url, data, options = {}) {
+    return this.request({ ...options, url, data, method: 'POST' })
   }
 }

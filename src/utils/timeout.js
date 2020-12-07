@@ -1,3 +1,5 @@
+// const supportAbortController = typeof AbortController === 'function'
+
 /**
  * Network timeout
  * References：Why the default is 2147483647 milliseconds?
@@ -12,10 +14,10 @@
 export default (request, timeout, url) =>
   Promise.race([
     request,
-    new Promise((_, reject) => {
+    new Promise((resolve, reject) => {
       const timeoutID = setTimeout(() => {
-        clearTimeout(timeoutID);
-        reject(new Error(`network timeout at: ${url}`));
-      }, timeout || 2147483647);
-    }),
-  ]);
+        clearTimeout(timeoutID)
+        reject(new Error(`network timeout at: ${url}`))
+      }, timeout || 2147483647)
+    })
+  ])

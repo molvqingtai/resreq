@@ -4,15 +4,12 @@
 
 **In development, coming soon...**
 
-
-
 ### TODO
 
-- [x] Timeout 
-- [ ] Use TypeScript
-- [ ] Request Progress 
-- [ ] Cancel request 
-- [ ] Retry-After 
+- [x] Timeout
+- [ ] Request Progress
+- [ ] Cancel request
+- [ ] Retry-After
 - [ ] Helper function
+- [ ] Use TypeScript
 - [ ] Unit tests
-

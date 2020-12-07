@@ -3,4 +3,4 @@
  * @param {String} url Input url
  * @return {String}    Output url
  */
-export default (url) => url.replace(/([^:]\/)\/+/g, "$1");
+export default (url) => url.replace(/([^:]\/)\/+/g, '$1')

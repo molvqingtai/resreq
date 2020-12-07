@@ -1,16 +1,18 @@
-import Koa from "koa";
+import Koa from 'koa'
+import cors from '@koa/cors'
 
-const app = new Koa();
+const app = new Koa()
+app.use(cors())
 
 app.use(async (ctx, next) => {
   return new Promise((resolve) => {
-    setTimeout(resolve, 2147483647);
+    setTimeout(resolve, 10)
   }).then(() => {
     ctx.body = {
-      message: "I am a teapot.",
-    };
-    return next();
-  });
-});
+      message: 'I am a teapot.'
+    }
+    return next()
+  })
+})
 
-app.listen(3000);
+app.listen(3000)

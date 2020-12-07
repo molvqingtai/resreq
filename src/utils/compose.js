@@ -4,4 +4,4 @@
  * @param {Array} funcs middleware chain
  * @return {Function}   (...args) => f1(f2(f3(...args)))
  */
-export default (funcs) => funcs.reduce((a, b) => (...args) => a(b(...args)));
+export default (funcs) => funcs.reduce((a, b) => (...args) => a(b(...args)))
