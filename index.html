@@ -21,8 +21,7 @@
         try {
           const formData = new FormData()
           formData.append('test', 'message post')
-          // const getRes = await ressage.get("http://127.0.0.1:3000/");
-          const postRes = await yici.post('http://127.0.0.1:3000/', formData, {
+          const getRes = await yici.get('http://127.0.0.1:3000', {
             onResponseProgress({ ratio, being, total, speed }, chunk) {
               const GB = (speed / 1073741824).toFixed(1)
               const MB = (speed / 1048576).toFixed(1)
@@ -30,13 +29,25 @@
 
               const formatRatio = `${~~(ratio * 100)}%`
               const formatSpeed = GB >= 0.1 ? `${GB}GB/s` : MB >= 0.1 ? `${MB}MB/s` : `${KB}KB/s`
-
-              console.log(`response-progress: ${formatRatio} ${being}|${total} ${formatSpeed}`)
-              debugger
+              document.body.innerText = `response-progress: ${formatRatio} (${being}/${total}) ${formatSpeed}`
+              // console.log(`response-progress: ${formatRatio} (${being}/${total}) ${formatSpeed}`)
             }
           })
-          console.log('postRes', postRes)
-          debugger
+          // const postRes = await yici.post('http://127.0.0.1:3000/', formData, {
+          //   onResponseProgress({ ratio, being, total, speed }, chunk) {
+          //     const GB = (speed / 1073741824).toFixed(1)
+          //     const MB = (speed / 1048576).toFixed(1)
+          //     const KB = (speed / 1024).toFixed(1)
+
+          //     const formatRatio = `${~~(ratio * 100)}%`
+          //     const formatSpeed = GB >= 0.1 ? `${GB}GB/s` : MB >= 0.1 ? `${MB}MB/s` : `${KB}KB/s`
+
+          //     console.log(`response-progress: ${formatRatio} (${being}/${total}) ${formatSpeed}`)
+          //     debugger
+          //   }
+          // })
+          console.log('getRes', getRes)
+          // debugger
         } catch (error) {
           console.log('🚀 ~ file: index.js ~ line 20 ~ error', error.message)
           debugger

@@ -38,18 +38,17 @@ export default class Yici {
               let being = 0
               let timing = 0
               const reader = body.getReader()
-
+              // Initial progress
+              onResponseProgress(
+                {
+                  ratio: 0, // Current Transfer Ratio
+                  being: 0, // Current Transfer Byte Size
+                  total: 0, // Total size of transmitted bytes
+                  speed: 0 // Current transmission speed per second
+                },
+                new Uint8Array() // The chunk argument is an instance of Uint8Array.
+              )
               const pipe = async () => {
-                // Initial progress
-                onResponseProgress(
-                  {
-                    ratio: 0, // Current Transfer Ratio
-                    being: 0, // Current Transfer Byte Size
-                    total: 0, // Total size of transmitted bytes
-                    speed: 0 // Current transmission speed per second
-                  },
-                  new Uint8Array() // The chunk argument is an instance of Uint8Array.
-                )
                 const startTime = +new Date()
                 const { done, value } = await reader.read()
                 const endTime = +new Date()
@@ -61,7 +60,7 @@ export default class Yici {
                 timing = timing + (endTime - startTime) / 1000
                 onResponseProgress(
                   {
-                    ratio: total / being,
+                    ratio: being / total,
                     being,
                     total,
                     speed: being / timing
@@ -101,11 +100,11 @@ export default class Yici {
     return this.response(dispatch(this.adapter.bind(this))(request))(options.onResponseProgress)
   }
 
-  get(url, data, options = {}) {
-    return this.request({ ...options, url, data, method: 'GET' })
+  get(url, options = {}) {
+    return this.request({ ...options, url, method: 'GET' })
   }
 
-  post(url, data, options = {}) {
-    return this.request({ ...options, url, data, method: 'POST' })
+  post(url, options = {}) {
+    return this.request({ ...options, url, method: 'POST' })
   }
 }
