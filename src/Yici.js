@@ -20,7 +20,7 @@ export default class Yici {
     return this
   }
 
-  async adapter(request) {
+  adapter(request) {
     return timeout(this.fetch(request), this.timeout, request.url)
   }
 

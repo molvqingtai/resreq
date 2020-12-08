@@ -10,6 +10,5 @@
 - [x] Response Progress
 - [ ] Cancel request
 - [ ] Retry-After
-- [ ] Helper function
 - [ ] Use TypeScript
 - [ ] Unit tests
