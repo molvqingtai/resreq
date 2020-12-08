@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "client": "live-server",
+    "client": "live-server --port=8080",
     "server": "node src/server.js",
     "lint": "eslint . --ext .js,.ts --fix"
   },

@@ -7,7 +7,7 @@
 ### TODO
 
 - [x] Timeout
-- [ ] Request Progress
+- [x] Response Progress
 - [ ] Cancel request
 - [ ] Retry-After
 - [ ] Helper function

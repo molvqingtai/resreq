@@ -16,8 +16,12 @@ yici.use((next) => async (req) => {
     const formData = new FormData()
     formData.append('test', 'message post')
     // const getRes = await ressage.get("http://127.0.0.1:3000/");
-    const postRes = await yici.post('http://127.0.0.1:3000/', formData, { test: 1 })
-    console.log('postRes', postRes)
+    const postRes = await yici.post('http://127.0.0.1:3000/', formData, {
+      onResponseProgress(progress, transferred, total, speed) {
+        console.log(progress, transferred, total, speed)
+      }
+    })
+    console.log('postRes', postRes.json())
   } catch (error) {
     console.log('🚀 ~ file: index.js ~ line 20 ~ error', error.message)
   }
