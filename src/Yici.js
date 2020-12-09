@@ -1,7 +1,5 @@
 import { compose, typeOf, normalizeUrl, timeout, formatMethod, transformParams, transformBody } from './utils/index.js'
 
-export const CancelToken = () => {}
-
 export default class Yici {
   constructor(options = {}) {
     this.options = options
@@ -27,8 +25,13 @@ export default class Yici {
   response(pending) {
     return (onResponseProgress) =>
       pending.then(async (response) => {
-        // Read-only attributes cannot use spread operators
         const { headers, redirected, status, statusText, type, url, ok, body } = response
+
+        /**
+         * When http compression is used (common for big downloads)
+         * The content-length is the size after the http compression
+         * While the byteLength is the size after the file has been extracted.
+         */
         const total = +headers.get('content-length') || 0
         if (!ok) throw new Error(response.statusText)
 
@@ -39,15 +42,17 @@ export default class Yici {
               let timing = 0
               const reader = body.getReader()
               // Initial progress
-              onResponseProgress(
-                {
-                  ratio: 0, // Current Transfer Ratio
-                  being: 0, // Current Transfer Byte Size
-                  total: 0, // Total size of transmitted bytes
-                  speed: 0 // Current transmission speed per second
-                },
-                new Uint8Array() // The chunk argument is an instance of Uint8Array.
-              )
+              onResponseProgress &&
+                onResponseProgress(
+                  {
+                    ratio: 0, // Current Transfer Ratio
+                    being: 0, // Current Transfer Byte Size
+                    total: 0, // Total size of transmitted bytes
+                    speed: 0 // Current transmission speed per second
+                  },
+                  new Uint8Array() // The chunk argument is an instance of Uint8Array.
+                )
+
               const pipe = async () => {
                 const startTime = +new Date()
                 const { done, value } = await reader.read()
@@ -58,15 +63,16 @@ export default class Yici {
 
                 being += value.byteLength
                 timing = timing + (endTime - startTime) / 1000
-                onResponseProgress(
-                  {
-                    ratio: being / total,
-                    being,
-                    total,
-                    speed: being / timing
-                  },
-                  value
-                )
+                onResponseProgress &&
+                  onResponseProgress(
+                    {
+                      ratio: being / total,
+                      being,
+                      total,
+                      speed: being / timing
+                    },
+                    value
+                  )
                 return pipe()
               }
               return pipe()
