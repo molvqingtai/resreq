@@ -8,7 +8,12 @@
   <body>
     <script type="module">
       import Resreq, { Req } from './dist/index.js'
-      const resreq = new Resreq()
+      const resreq = new Resreq({
+        onDownloadProgress(progress, chunk) {
+          console.log('Resreq-progress', progress)
+          // console.log('chunk', chunk)
+        }
+      })
       resreq.use((next) => async (req) => {
         try {
           console.log('req', req)
@@ -24,7 +29,7 @@
       })
       resreq
         .request({
-          url: 'https://www.baidu.com',
+          url: 'http://127.0.0.1:8080/HandShaker.dmg',
           method: 'GET',
           headers: {
             test: 123,
@@ -32,10 +37,14 @@
           },
           meta: {
             test: 12345
+          },
+          onDownloadProgress(progress, chunk) {
+            console.log('request-progress', progress)
+            // console.log('chunk', chunk)
           }
         })
-        .then((res) => {
-          console.log('res', res)
+        .then(async (res) => {
+          console.log('res', await res.text())
         })
         .catch((err) => {
           console.log('err', err)
