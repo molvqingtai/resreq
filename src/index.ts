@@ -1,22 +1,25 @@
 import { TypeClass, TypeMethod, TypeParam } from '@resreq/type-error-decorator'
 import compose from './helper/compose'
 import cleanUrl from './helper/cleanUrl'
+import mergeObject from './helper/mergeObject'
 // import cleanObject from './helper/cleanObject'
 // import typeOf from './helper/typeOf'
 
-export interface Config extends RequestInit {
-  baseUrl?: string
+interface CommonOptions extends RequestInit {
   timeout?: number
   responseType?: 'json' | 'text' | 'blob' | 'arraybuffer' | 'formData'
   retry?: number
+  onDownloadProgress?: (progressEvent: ProgressEvent) => void
+  onUploadProgress?: (progressEvent: ProgressEvent) => void
+}
+
+export interface Config extends Exclude<CommonOptions, 'method'> {
+  baseUrl?: string
   fetch?: typeof fetch
 }
 
-export interface Options extends RequestInit {
+export interface Options extends CommonOptions {
   url: string
-  timeout?: number
-  responseType?: 'json' | 'text' | 'blob' | 'arraybuffer' | 'formData'
-  retry?: number
   meta?: { [key: string]: any }
 }
 
@@ -135,47 +138,9 @@ export default class Resreq {
 
   @TypeMethod
   async request<T>(@TypeParam('Object') options: Options): Promise<T> {
-    const {
-      baseUrl,
-      timeout,
-      responseType,
-      retry,
-      body,
-      cache,
-      credentials,
-      headers,
-      integrity,
-      keepalive,
-      method,
-      mode,
-      redirect,
-      referrer,
-      referrerPolicy,
-      signal,
-      window
-    } = this.config
-
-    const url = cleanUrl(baseUrl! + options.url)
-    const request = new Req({
-      url,
-      timeout: options.timeout ?? timeout,
-      responseType: options.responseType ?? responseType,
-      retry: options.retry ?? retry,
-      meta: options.meta ?? {},
-      body: options.body ?? body,
-      cache: options.cache ?? cache,
-      credentials: options.credentials ?? credentials,
-      headers: new Headers({ ...headers, ...options.headers }),
-      integrity: options.integrity ?? integrity,
-      keepalive: options.keepalive ?? keepalive,
-      method: options.method ?? method,
-      mode: options.mode ?? mode,
-      redirect: options.redirect ?? redirect,
-      referrer: options.referrer ?? referrer,
-      referrerPolicy: options.referrerPolicy ?? referrerPolicy,
-      signal: options.signal ?? signal,
-      window: options.window ?? window
-    })
+    // const url = cleanUrl(baseUrl! + options.url)
+    const url = cleanUrl(this.config.baseUrl! + options.url)
+    const request = new Req({ ...mergeObject(this.config, options), url })
     const dispatch = compose(...this.middleware)
     return dispatch(this.adapter.bind(this))(request)
     // TODO Fix Content-Type
@@ -198,7 +163,7 @@ export default class Resreq {
 
   @TypeMethod
   async put(@TypeParam('string') url: string, @TypeParam('Object', false) options?: Options) {
-    return await this.request({ url, ...options, method: 'put' })
+    return await this.request({ url, ...options, method: 'PUT' })
   }
 
   @TypeMethod

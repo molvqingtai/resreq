@@ -1,11 +1,15 @@
 import typeOf from './typeOf'
 
+interface O {
+  [key: string]: any
+}
+
 /**
  * Clear invalid values from object
  * @param target target object
  * @param match match type,default undefined|null
  */
-const cleanObject = (target: object, match = [undefined, null]): object =>
+const cleanObject = (target: O, match = [undefined, null]): O =>
   Object.entries(target).reduce((acc, [key, value]) => {
     if (typeOf(value) === 'Object') {
       return { ...acc, [key]: cleanObject(value) }

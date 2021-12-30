@@ -13,7 +13,8 @@
         try {
           console.log('req', req)
           console.log('next', next)
-          console.log('Req', new Req(req))
+
+          console.log(req.headers.get('test'))
           const res = await next(req)
           console.log('res', res)
           return res
@@ -26,6 +27,7 @@
           url: 'https://www.baidu.com',
           method: 'GET',
           headers: {
+            test: 123,
             'Content-Type': 'application/json'
           },
           meta: {
