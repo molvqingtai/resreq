@@ -2,7 +2,7 @@ import { TypeClass, TypeMethod, TypeParam } from '@resreq/type-error-decorator'
 import compose from './helper/compose'
 import cleanUrl from './helper/cleanUrl'
 import mergeObject from './helper/mergeObject'
-import { download } from './middleware/progress'
+import { onResponse } from './middleware/progress'
 
 export interface Progress {
   ratio: number // Current Transfer Ratio
@@ -15,8 +15,8 @@ export type ProgressCallback = (progress: Progress, chunk: Uint8Array) => void
 interface CommonOptions extends RequestInit {
   timeout?: number
   retry?: number
-  onDownloadProgress?: ProgressCallback
-  onUploadProgress?: ProgressCallback
+  onRequestProgress?: ProgressCallback
+  onResponseProgress?: ProgressCallback
 }
 
 export interface Config extends Exclude<CommonOptions, 'method'> {
@@ -24,35 +24,44 @@ export interface Config extends Exclude<CommonOptions, 'method'> {
   fetch?: typeof fetch
 }
 
+export const ON_GLOBAL_REQUEST_PROGRESS = Symbol('ON_GLOBAL_REQUEST_PROGRESS')
+export const ON_GLOBAL_RESPONSE_PROGRESS = Symbol('ON_GLOBAL_RESPONSE_PROGRESS')
+
 export interface Options extends CommonOptions {
   url: string
   meta?: { [key: string]: any }
+  [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback
+  [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
 }
 
 // export interface Req extends Required<Options> {}
 export type Next = (req: Req) => Promise<Response>
-export type Middleware = (next: Next) => (req: Req) => Promise<any>
+export type Middleware = (next: Next) => (req: Req) => Promise<Response>
 
 export class Req extends Request {
   timeout
   retry
   meta
-  onDownloadProgress
-  onUploadProgress
+  onRequestProgress
+  onResponseProgress;
+  readonly [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback;
+  readonly [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
   constructor(options: Options) {
     super(options.url, options)
     this.timeout = options.timeout ?? 5000
     this.retry = options.retry ?? 0
     this.meta = options.meta ?? {}
-    this.onDownloadProgress = options.onDownloadProgress
-    this.onUploadProgress = options.onUploadProgress
+    this.onRequestProgress = options.onRequestProgress
+    this.onResponseProgress = options.onResponseProgress
+    this[ON_GLOBAL_REQUEST_PROGRESS] = options[ON_GLOBAL_REQUEST_PROGRESS]
+    this[ON_GLOBAL_RESPONSE_PROGRESS] = options[ON_GLOBAL_RESPONSE_PROGRESS]
   }
 }
 
 @TypeClass
 export default class Resreq {
   config: Config
-  middleware: Middleware[] = [download]
+  middleware: Middleware[] = [onResponse]
   constructor(@TypeParam('Object', false) config: Config = {}) {
     this.config = {
       ...config,
@@ -75,15 +84,13 @@ export default class Resreq {
   @TypeMethod
   async request<T>(@TypeParam('Object') options: Options): Promise<T> {
     const url = cleanUrl(this.config.baseUrl! + options.url)
-    const onDownloadProgress: ProgressCallback = (...args) => {
-      this.config.onDownloadProgress?.(...args)
-      options.onDownloadProgress?.(...args)
+    const progress = {
+      onRequestProgress: options.onRequestProgress,
+      onResponseProgress: options.onResponseProgress,
+      [ON_GLOBAL_REQUEST_PROGRESS]: this.config.onRequestProgress,
+      [ON_GLOBAL_RESPONSE_PROGRESS]: this.config.onResponseProgress
     }
-    const onUploadProgress: ProgressCallback = (...args) => {
-      this.config.onUploadProgress?.(...args)
-      options.onUploadProgress?.(...args)
-    }
-    const request = new Req({ ...mergeObject(this.config, options), url, onDownloadProgress, onUploadProgress })
+    const request = new Req({ ...mergeObject(this.config, options), url, ...progress })
     const dispatch = compose(...this.middleware)
     return dispatch(this.adapter.bind(this))(request)
   }
