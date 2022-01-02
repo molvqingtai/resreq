@@ -6,10 +6,8 @@
 
 ### TODO
 
-- [ ] Timeout
+- [x] Timeout
 - [x] Response Progress
 - [ ] Request Progress
-- [ ] Cancel request
-- [ ] Retry-After
-- [ ] Use TypeScript
+- [x] Cancel request
 - [ ] Unit tests
