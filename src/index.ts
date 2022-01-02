@@ -1,73 +1,34 @@
 import { TypeClass, TypeMethod, TypeParam } from '@resreq/type-error-decorator'
+import { ON_GLOBAL_REQUEST, ON_GLOBAL_RESPONSE } from './consts'
 import compose from './helper/compose'
 import cleanUrl from './helper/cleanUrl'
 import mergeObject from './helper/mergeObject'
-import { onResponse } from './middleware/progress'
+import onResponse from './middleware/onResponse'
+import timeout from './middleware/timeout'
+import Req, { ReqInit } from './Req'
+import Res from './Res'
 
-export interface Progress {
-  ratio: number // Current Transfer Ratio
-  carry: number // Current Transfer Byte Size
-  total: number // Total size of transmitted bytes
-}
+export type Next = (req: Req) => Promise<Res>
+export type Middleware = (next: Next) => (req: Req) => Promise<Res>
 
-export type ProgressCallback = (progress: Progress, chunk: Uint8Array) => void
-
-interface CommonOptions extends RequestInit {
-  timeout?: number
-  retry?: number
-  onRequestProgress?: ProgressCallback
-  onResponseProgress?: ProgressCallback
-}
-
-export interface Config extends Exclude<CommonOptions, 'method'> {
+export interface Config extends Omit<ReqInit, 'body' | 'method'> {
   baseUrl?: string
   fetch?: typeof fetch
 }
 
-export const ON_GLOBAL_REQUEST_PROGRESS = Symbol('ON_GLOBAL_REQUEST_PROGRESS')
-export const ON_GLOBAL_RESPONSE_PROGRESS = Symbol('ON_GLOBAL_RESPONSE_PROGRESS')
-
-export interface Options extends CommonOptions {
+export interface Options extends ReqInit {
   url: string
-  meta?: { [key: string]: any }
-  [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback
-  [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
-}
-
-// export interface Req extends Required<Options> {}
-export type Next = (req: Req) => Promise<Response>
-export type Middleware = (next: Next) => (req: Req) => Promise<Response>
-
-export class Req extends Request {
-  timeout
-  retry
-  meta
-  onRequestProgress
-  onResponseProgress;
-  readonly [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback;
-  readonly [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
-  constructor(options: Options) {
-    super(options.url, options)
-    this.timeout = options.timeout ?? 5000
-    this.retry = options.retry ?? 0
-    this.meta = options.meta ?? {}
-    this.onRequestProgress = options.onRequestProgress
-    this.onResponseProgress = options.onResponseProgress
-    this[ON_GLOBAL_REQUEST_PROGRESS] = options[ON_GLOBAL_REQUEST_PROGRESS]
-    this[ON_GLOBAL_RESPONSE_PROGRESS] = options[ON_GLOBAL_RESPONSE_PROGRESS]
-  }
 }
 
 @TypeClass
 export default class Resreq {
   config: Config
-  middleware: Middleware[] = [onResponse]
+  middleware: Middleware[] = [onResponse, timeout]
   constructor(@TypeParam('Object', false) config: Config = {}) {
     this.config = {
       ...config,
       baseUrl: config.baseUrl ?? '',
-      timeout: config.timeout ?? 5000,
-      retry: config.retry ?? 0,
+      timeout: config.timeout ?? 10000,
       fetch: config.fetch ?? fetch.bind(globalThis)
     }
   }
@@ -84,39 +45,43 @@ export default class Resreq {
   @TypeMethod
   async request<T>(@TypeParam('Object') options: Options): Promise<T> {
     const url = cleanUrl(this.config.baseUrl! + options.url)
-    const progress = {
-      onRequestProgress: options.onRequestProgress,
-      onResponseProgress: options.onResponseProgress,
-      [ON_GLOBAL_REQUEST_PROGRESS]: this.config.onRequestProgress,
-      [ON_GLOBAL_RESPONSE_PROGRESS]: this.config.onResponseProgress
-    }
-    const request = new Req({ ...mergeObject(this.config, options), url, ...progress })
+    const initOptions = mergeObject(this.config, options)
+    const request = new Req(new Request(url, initOptions), {
+      ...initOptions,
+      onRequest: options.onRequest,
+      onResponse: options.onResponse,
+      [ON_GLOBAL_REQUEST]: this.config.onRequest,
+      [ON_GLOBAL_RESPONSE]: this.config.onResponse
+    })
     const dispatch = compose(...this.middleware)
     return dispatch(this.adapter.bind(this))(request)
   }
 
   @TypeMethod
-  async get(@TypeParam('string') url: string, @TypeParam('Object', false) options?: Options) {
-    return await this.request({ url, ...options, method: 'GET' })
+  async get(@TypeParam('String') url: string, @TypeParam('Object', false) options?: Options) {
+    return await this.request({ ...options, url, method: 'GET' })
   }
 
   @TypeMethod
-  async post(@TypeParam('string') url: string, @TypeParam('Object', false) options?: Options) {
-    return await this.request({ url, ...options, method: 'POST' })
+  async post(@TypeParam('String') url: string, @TypeParam('Object', false) options?: Options) {
+    return await this.request({ ...options, url, method: 'POST' })
   }
 
   @TypeMethod
-  async put(@TypeParam('string') url: string, @TypeParam('Object', false) options?: Options) {
-    return await this.request({ url, ...options, method: 'PUT' })
+  async put(@TypeParam('String') url: string, @TypeParam('Object', false) options?: Options) {
+    return await this.request({ ...options, url, method: 'PUT' })
   }
 
   @TypeMethod
-  async delete(@TypeParam('string') url: string, @TypeParam('Object', false) options?: Options) {
-    return await this.request({ url, ...options, method: 'DELETE' })
+  async delete(@TypeParam('String') url: string, @TypeParam('Object', false) options?: Options) {
+    return await this.request({ ...options, url, method: 'DELETE' })
   }
 
   @TypeMethod
-  async path(@TypeParam('string') url: string, @TypeParam('Object', false) options?: Options) {
-    return await this.request({ url, ...options, method: 'path' })
+  async path(@TypeParam('String') url: string, @TypeParam('Object', false) options?: Options) {
+    return await this.request({ ...options, url, method: 'path' })
   }
 }
+
+export { default as Req, ReqInit } from './Req'
+export { default as Res, ResInit } from './Res'

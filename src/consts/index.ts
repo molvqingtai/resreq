@@ -1,0 +1,2 @@
+export const ON_GLOBAL_REQUEST = Symbol('ON_GLOBAL_REQUEST')
+export const ON_GLOBAL_RESPONSE = Symbol('ON_GLOBAL_RESPONSE')

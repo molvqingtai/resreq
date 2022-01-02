@@ -6,8 +6,7 @@ export const onResponse: Middleware = (next) => async (req) => {
     req[ON_GLOBAL_RESPONSE_PROGRESS]?.(...args)
     req.onResponseProgress?.(...args)
   }
-
-  new ReadableStream({
+  const stream = new ReadableStream({
     async start(controller) {
       /**
        * When http compression is used (common for big downloads)
@@ -34,7 +33,7 @@ export const onResponse: Middleware = (next) => async (req) => {
 
         onResponseProgress(
           {
-            ratio: carry / total,
+            ratio: (carry / total) * 100,
             carry,
             total
           },
@@ -46,6 +45,8 @@ export const onResponse: Middleware = (next) => async (req) => {
       await read()
     }
   })
+
+  console.log(new Response(stream))
 
   return res
 }
