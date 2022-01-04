@@ -1,8 +1,8 @@
-import { TypeClass, TypeMethod, TypeParam } from '@resreq/type-error-decorator'
 import { ON_GLOBAL_REQUEST, ON_GLOBAL_RESPONSE } from './consts'
 import compose from './helper/compose'
 import cleanUrl from './helper/cleanUrl'
 import mergeObject from './helper/mergeObject'
+import onRequest from './middleware/onRequest'
 import onResponse from './middleware/onResponse'
 import timeout from './middleware/timeout'
 import Req, { ReqInit } from './Req'
@@ -20,11 +20,10 @@ export interface Options extends ReqInit {
   url: string
 }
 
-@TypeClass
 export default class Resreq {
   config: Config
-  middleware: Middleware[] = [onResponse, timeout]
-  constructor(@TypeParam('Object', false) config: Config = {}) {
+  middleware: Middleware[] = [onRequest, timeout, onResponse]
+  constructor(config: Config = {}) {
     this.config = {
       ...config,
       baseUrl: config.baseUrl ?? '',
@@ -42,43 +41,36 @@ export default class Resreq {
     return await this.config.fetch!(request)
   }
 
-  @TypeMethod
-  async request<T>(@TypeParam('Object') options: Options): Promise<T> {
+  async request<T>(options: Options): Promise<T> {
     const url = cleanUrl(this.config.baseUrl! + options.url)
-    const initOptions = mergeObject(this.config, options)
-    const request = new Req(new Request(url, initOptions), {
-      ...initOptions,
+    const dispatch = compose(...this.middleware)
+    return dispatch(this.adapter.bind(this))({
+      ...mergeObject(this.config, options),
+      url,
       onRequest: options.onRequest,
       onResponse: options.onResponse,
       [ON_GLOBAL_REQUEST]: this.config.onRequest,
       [ON_GLOBAL_RESPONSE]: this.config.onResponse
     })
-    const dispatch = compose(...this.middleware)
-    return dispatch(this.adapter.bind(this))(request)
   }
 
-  @TypeMethod
-  async get(@TypeParam('String') url: string, @TypeParam('Object', false) options?: Options) {
+  async get(url: string, options?: Options) {
     return await this.request({ ...options, url, method: 'GET' })
   }
 
-  @TypeMethod
-  async post(@TypeParam('String') url: string, @TypeParam('Object', false) options?: Options) {
+  async post(url: string, options?: Options) {
     return await this.request({ ...options, url, method: 'POST' })
   }
 
-  @TypeMethod
-  async put(@TypeParam('String') url: string, @TypeParam('Object', false) options?: Options) {
+  async put(url: string, options?: Options) {
     return await this.request({ ...options, url, method: 'PUT' })
   }
 
-  @TypeMethod
-  async delete(@TypeParam('String') url: string, @TypeParam('Object', false) options?: Options) {
+  async delete(url: string, options?: Options) {
     return await this.request({ ...options, url, method: 'DELETE' })
   }
 
-  @TypeMethod
-  async path(@TypeParam('String') url: string, @TypeParam('Object', false) options?: Options) {
+  async path(url: string, options?: Options) {
     return await this.request({ ...options, url, method: 'path' })
   }
 }

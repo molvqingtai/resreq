@@ -10,6 +10,11 @@
     <script type="module">
       import Resreq, { Req } from './dist/index.js'
       const resreq = new Resreq({
+        base: '/',
+        // timeout: 4000,
+        meta: {
+          test: 1
+        },
         headers: {
           'Content-Type': 'application/json'
         },
@@ -18,31 +23,36 @@
           // console.log('chunk', chunk)
         }
       })
+
       resreq
         .post('http://127.0.0.1:3000', {
           body: {
             a: 1,
             b: 2
+          },
+          onResponse({ ratio, carry, total }, chunk) {
+            document.querySelector('.progress').innerHTML = `Res: ${~~ratio}% ${carry} ${total}`
           }
         })
         .then(async (res) => {
           console.log('res', await res.json())
         })
 
-      // resreq.use((next) => async (req) => {
-      //   try {
-      //     console.log('req', req)
-      //     console.log('req2', new Req(req))
-      //     const res = await next(req)
-      //     console.log('res', res)
-      //     return res
-      //   } catch (error) {
-      //     console.log('error', error)
-      //   }
-      // })
+      resreq.use((next) => async (req) => {
+        try {
+          console.log('req', req)
+          console.log('req2', new Req(req))
+          const res = await next(req)
+          console.log('res', res)
+          return res
+        } catch (error) {
+          console.log('error', error)
+        }
+      })
+
       // resreq
       //   .request({
-      //     url: 'http://127.0.0.1:8080/HandShaker.dmg',
+      //     url: 'http://127.0.0.1:3000/static/test.mp4',
       //     method: 'GET',
       //     headers: {
       //       test: 123,

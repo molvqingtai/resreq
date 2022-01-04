@@ -10,7 +10,7 @@ export interface ReqInit extends RequestInit {
 }
 
 export default class Req extends Request {
-  meta?: { [key: string]: any }
+  meta?: Record<string, any>
   timeout?: number
   onRequest?: ProgressCallback
   onResponse?: ProgressCallback

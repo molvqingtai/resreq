@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "client": "live-server --port=8080",
-    "server": "node src/server.js",
+    "server": "nodemon src/server",
     "dev": "esbuild src/index.ts --watch --sourcemap --bundle --format=esm --outdir=dist",
     "build": "esbuild src/index.ts --bundle --format=esm --outdir=dist",
     "lint": "eslint src --ext .js,.ts --fix",
@@ -16,7 +16,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@resreq/type-error-decorator": "^1.0.5"
+    "@resreq/type-error-decorator": "1.0.6",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@commitlint/cli": "^13.2.1",
@@ -36,7 +37,9 @@
     "esmo": "^0.10.1",
     "husky": "^7.0.4",
     "koa": "^2.13.4",
+    "koa-static": "^5.0.0",
     "live-server": "^1.1.0",
+    "nodemon": "^2.0.15",
     "prettier": "^2.4.1",
     "typescript": "^4.4.4"
   },
