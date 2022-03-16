@@ -1,23 +1,22 @@
-import { ON_GLOBAL_REQUEST, ON_GLOBAL_RESPONSE } from './consts'
+import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS } from './consts'
 
-export interface ReqInit extends RequestInit {
-  timeout?: number
-  meta?: Record<string, any>
-  onRequest?: ProgressCallback
-  onResponse?: ProgressCallback
-  [ON_GLOBAL_REQUEST]?: ProgressCallback
-  [ON_GLOBAL_RESPONSE]?: ProgressCallback
+export interface ReqInit extends RequestInit, ExtendInit {
+  [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback
+  [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
 }
 
 export default class Req extends Request {
+  baseUrl?: string
+  params?: Record<string, any>
   meta?: Record<string, any>
   timeout?: number
-  onRequest?: ProgressCallback
-  onResponse?: ProgressCallback
+  throwHttpErrors?: boolean
+  onRequestProgress?: ProgressCallback
+  onResponseProgress?: ProgressCallback
   abortController: AbortController;
-  readonly [ON_GLOBAL_REQUEST]?: ProgressCallback;
-  readonly [ON_GLOBAL_RESPONSE]?: ProgressCallback
-  constructor(request: Request | Req, init?: ReqInit) {
+  readonly [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback;
+  readonly [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
+  constructor(request: Request, init?: ReqInit) {
     const abortController = new AbortController()
     const signal = init?.signal || request.signal || abortController.signal
     super(request, {
@@ -32,15 +31,16 @@ export default class Req extends Request {
       referrerPolicy: init?.referrerPolicy ?? request.referrerPolicy,
       integrity: init?.integrity ?? request.integrity,
       keepalive: init?.keepalive ?? request.keepalive,
-      signal: abortController.signal,
-      window: init?.window ?? (request as RequestInit).window
+      signal: abortController.signal
     })
-    this.meta = init?.meta ?? (request as Req).meta
-    this.timeout = init?.timeout ?? (request as Req).timeout
-    this.onRequest = init?.onRequest ?? (request as Req).onRequest
-    this.onResponse = init?.onResponse ?? (request as Req).onResponse
-    this[ON_GLOBAL_REQUEST] = init?.[ON_GLOBAL_REQUEST] ?? (request as Req)[ON_GLOBAL_REQUEST]
-    this[ON_GLOBAL_RESPONSE] = init?.[ON_GLOBAL_RESPONSE] ?? (request as Req)[ON_GLOBAL_RESPONSE]
+    this.params = init?.params
+    this.meta = init?.meta
+    this.timeout = init?.timeout
+    this.throwHttpErrors = init?.throwHttpErrors
+    this.onRequestProgress = init?.onRequestProgress
+    this.onResponseProgress = init?.onResponseProgress
+    this[ON_GLOBAL_REQUEST_PROGRESS] = init?.[ON_GLOBAL_REQUEST_PROGRESS]
+    this[ON_GLOBAL_RESPONSE_PROGRESS] = init?.[ON_GLOBAL_RESPONSE_PROGRESS]
     this.abortController = abortController
     signal.onabort = abortController.abort
   }

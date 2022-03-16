@@ -1,7 +1,7 @@
-import { ON_GLOBAL_REQUEST, ON_GLOBAL_RESPONSE } from './consts'
+import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS } from './consts'
 import compose from './helper/compose'
-import onRequest from './middleware/onRequest'
-import onResponse from './middleware/onResponse'
+import requestHandler from './middleware/requestHandler'
+import responseHandler from './middleware/responseHandler'
 import timeout from './middleware/timeout'
 import Req, { ReqInit } from './Req'
 import Res from './Res'
@@ -9,23 +9,19 @@ import Res from './Res'
 export type Next = (req: Req) => Promise<Res>
 export type Middleware = (next: Next) => (req: Req) => Promise<Res>
 
-export interface Options extends ReqInit {
-  url?: string
-  baseUrl?: string
-  params?: Record<string, any>
-  body?: BodyInit | Record<string, any>
+export interface Options extends Omit<ReqInit, 'body'> {
   fetch?: typeof fetch
+  body?: BodyInit | Record<string, any>
 }
 
 export default class Resreq {
   options: Options
-  middleware: Middleware[] = [onRequest, timeout, onResponse]
+  middleware: Middleware[] = [requestHandler, timeout, responseHandler]
   constructor(options: Options = {}) {
     this.options = {
       ...options,
       baseUrl: options.baseUrl ?? '',
-      timeout: options.timeout ?? 10000,
-      fetch: options.fetch ?? fetch.bind(globalThis)
+      timeout: options.timeout ?? 10000
     }
   }
 
@@ -35,7 +31,7 @@ export default class Resreq {
   }
 
   async adapter(request: Request) {
-    return await this.options.fetch!(request)
+    return await fetch(request)
   }
 
   async request(options: Options): Promise<Res> {
@@ -43,10 +39,10 @@ export default class Resreq {
     return dispatch(this.adapter.bind(this))({
       ...this.options,
       ...options,
-      onRequest: options.onRequest,
-      onResponse: options.onResponse,
-      [ON_GLOBAL_REQUEST]: this.options.onRequest,
-      [ON_GLOBAL_RESPONSE]: this.options.onResponse
+      onRequestProgress: options.onRequestProgress,
+      onResponseProgress: options.onResponseProgress,
+      [ON_GLOBAL_REQUEST_PROGRESS]: this.options.onRequestProgress,
+      [ON_GLOBAL_RESPONSE_PROGRESS]: this.options.onResponseProgress
     })
   }
 
@@ -68,6 +64,10 @@ export default class Resreq {
 
   async path(url: string, options?: Options) {
     return await this.request({ ...options, url, method: 'path' })
+  }
+
+  async head(url: string, options?: Options) {
+    return await this.request({ ...options, url, method: 'HEAD' })
   }
 }
 

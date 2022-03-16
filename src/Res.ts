@@ -1,6 +1,6 @@
-import { ON_GLOBAL_REQUEST, ON_GLOBAL_RESPONSE } from './consts'
+import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS } from './consts'
 
-const readStream = (response: Response, onResponse: ProgressCallback) =>
+const readStream = (response: Response, onResponseProgress: ProgressCallback) =>
   new ReadableStream({
     async start(controller) {
       /**
@@ -12,7 +12,7 @@ const readStream = (response: Response, onResponse: ProgressCallback) =>
       const reader = response.clone().body!.getReader()
       let carry = 0
 
-      onResponse(
+      onResponseProgress(
         {
           ratio: 0, // Current Transfer Ratio
           carry: 0, // Current Transfer Byte Size
@@ -26,7 +26,7 @@ const readStream = (response: Response, onResponse: ProgressCallback) =>
 
         carry += value!.byteLength
 
-        onResponse(
+        onResponseProgress(
           {
             ratio: (carry / total) * 100,
             carry,
@@ -41,39 +41,39 @@ const readStream = (response: Response, onResponse: ProgressCallback) =>
     }
   })
 
-export interface ResInit extends ResponseInit {
-  meta?: Record<string, any>
-  timeout?: number
-  onRequest?: ProgressCallback
-  onResponse?: ProgressCallback
-  [ON_GLOBAL_REQUEST]?: ProgressCallback
-  [ON_GLOBAL_RESPONSE]?: ProgressCallback
+export interface ResInit extends ResponseInit, ExtendInit {
+  [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback
+  [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
 }
 
 export default class Res extends Response {
+  baseUrl?: string
+  params?: Record<string, any>
   meta?: Record<string, any>
   timeout?: number
-  onRequest?: ProgressCallback
-  onResponse?: ProgressCallback;
-  readonly [ON_GLOBAL_REQUEST]?: ProgressCallback;
-  readonly [ON_GLOBAL_RESPONSE]?: ProgressCallback
-  constructor(response: Response | Res, init?: ResInit) {
+  throwHttpErrors?: boolean
+  onRequestProgress?: ProgressCallback
+  onResponseProgress?: ProgressCallback;
+  readonly [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback;
+  readonly [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
+  constructor(response: Response, init?: ResInit) {
     const _response = response.clone()
     super(response.body, {
       status: init?.status ?? response.status,
       statusText: init?.statusText ?? response.statusText,
       headers: init?.headers ?? response.headers
     })
-    this.meta = init?.meta ?? (response as Res).meta
-    this.timeout = init?.timeout ?? (response as Res).timeout
-    this.onRequest = init?.onRequest ?? (response as Res).onRequest
-    this.onResponse = init?.onResponse ?? (response as Res).onResponse
-    this[ON_GLOBAL_REQUEST] = init?.[ON_GLOBAL_REQUEST] ?? (response as Res)[ON_GLOBAL_REQUEST]
-    this[ON_GLOBAL_RESPONSE] = init?.[ON_GLOBAL_RESPONSE] ?? (response as Res)[ON_GLOBAL_RESPONSE]
-
+    this.params = init?.params
+    this.meta = init?.meta
+    this.timeout = init?.timeout
+    this.throwHttpErrors = init?.throwHttpErrors
+    this.onRequestProgress = init?.onRequestProgress
+    this.onResponseProgress = init?.onResponseProgress
+    this[ON_GLOBAL_REQUEST_PROGRESS] = init?.[ON_GLOBAL_REQUEST_PROGRESS]
+    this[ON_GLOBAL_RESPONSE_PROGRESS] = init?.[ON_GLOBAL_RESPONSE_PROGRESS]
     readStream(_response, (...args) => {
-      this.onResponse?.(...args)
-      this[ON_GLOBAL_RESPONSE]?.(...args)
+      this.onResponseProgress?.(...args)
+      this[ON_GLOBAL_RESPONSE_PROGRESS]?.(...args)
     })
   }
 }

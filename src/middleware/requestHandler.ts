@@ -2,16 +2,16 @@ import { Middleware, Options } from '../index'
 import cleanUrl from '../helper/cleanUrl'
 import Req from '../Req'
 
-interface ReqInit extends Options {
+interface OverrideReqInit extends Options {
   body?: BodyInit
 }
 
-const onRequest: Middleware = (next) => async (_req) => {
+const requestHandler: Middleware = (next) => async (_req) => {
   /**
-   * Before the initial request, req is not a Request instance, it is still just a normal object
-   * so the type needs to be fixed
+   * Before the initial request, req is not a Request instance
+   * it's still just a plain object and extends body So need to override type
    */
-  const req = _req as ReqInit
+  const req = _req as OverrideReqInit
 
   const url = Object.entries(req.params || {})
     .reduce((acc: URL, [key, value]) => {
@@ -37,7 +37,8 @@ const onRequest: Middleware = (next) => async (_req) => {
   }
 
   const request = new Request(url, req)
+
   return await next(new Req(request, req))
 }
 
-export default onRequest
+export default requestHandler
