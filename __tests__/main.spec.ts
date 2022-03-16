@@ -1,67 +1,128 @@
-// import 'web-streams-polyfill/dist/polyfill.min.js'
-import { test, describe, beforeAll, afterEach, afterAll, expect } from 'vitest'
-import { rest } from 'msw'
-import { setupServer } from 'msw/node'
+import { test, describe, beforeAll, afterAll, expect } from 'vitest'
+import Server from './helper/Server'
 import Resreq from '../src'
 
 interface ApiResponse {
-  status: number
+  code: number
   message: string
   data: any
 }
 
-const server = setupServer()
+const server = new Server({
+  host: 'http://localhost',
+  port: 3000
+})
 
-beforeAll(() => server.listen())
-afterEach(() => server.resetHandlers())
+beforeAll(async () => {
+  await server.listen()
+})
 afterAll(() => server.close())
 
 describe('Test methods', () => {
   const resreq = new Resreq({
-    baseUrl: 'http://localhost/'
+    baseUrl: 'http://localhost:3000'
   })
 
   test('GET request', async () => {
-    server.use(
-      rest.get('http://localhost/api', (req, res, ctx) => {
-        return res(
-          ctx.json({
-            status: 200,
-            message: req.url.searchParams.get('message')
-          })
-        )
-      })
-    )
-    try {
-      const res: ApiResponse = await (await resreq.get('/api/?message=ok')).json()
+    server.get('/api', (ctx) => {
+      try {
+        ctx.body = {
+          code: 200,
+          message: 'ok',
+          data: ctx.request.query
+        }
+      } catch (error) {
+        ctx.throw(500, error.message)
+      }
+    })
 
-      expect(res.status).toBe(200)
-      expect(res.message).toEqual('ok')
-    } catch (error) {
-      console.log('---', error)
-    }
+    const res: ApiResponse = await (
+      await resreq.get('/api', {
+        params: {
+          message: 'ok'
+        }
+      })
+    ).json()
+
+    expect(res.code).toBe(200)
+    expect(res.message).toEqual('ok')
+    expect(res.data).toEqual({ message: 'ok' })
   })
 
   test('POST request', async () => {
-    server.use(
-      rest.post('http://localhost/api', (req, res, ctx) => {
-        return res(
-          ctx.json({
-            status: 200,
-            message: (req.body as any).message
-          })
-        )
-      })
-    )
+    server.post('/api', (ctx) => {
+      try {
+        ctx.body = {
+          code: 200,
+          message: 'ok',
+          data: ctx.request.body
+        }
+      } catch (error) {
+        ctx.throw(500, error.message)
+      }
+    })
+
     const formData = new FormData()
     formData.append('message', 'ok')
-    const res: ApiResponse = await (
+
+    const res: any = await (
       await resreq.post('/api', {
         body: formData
       })
     ).json()
 
-    expect(res.status).toBe(200)
+    expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
+    expect(res.data).toEqual({ message: 'ok' })
+  })
+
+  test('POST request', async () => {
+    server.put('/api', (ctx) => {
+      try {
+        ctx.body = {
+          code: 200,
+          message: 'ok',
+          data: ctx.request.body
+        }
+      } catch (error) {
+        ctx.throw(500, error.message)
+      }
+    })
+
+    const formData = new FormData()
+    formData.append('message', 'ok')
+
+    const res: any = await (
+      await resreq.put('/api', {
+        body: formData
+      })
+    ).json()
+
+    expect(res.code).toBe(200)
+    expect(res.message).toEqual('ok')
+    expect(res.data).toEqual({ message: 'ok' })
+  })
+
+  test('POST request', async () => {
+    server.delete('/api', (ctx) => {
+      try {
+        ctx.body = {
+          code: 200,
+          message: 'ok',
+          data: ctx.request.query
+        }
+      } catch (error) {
+        ctx.throw(500, error.message)
+      }
+    })
+
+    const formData = new FormData()
+    formData.append('message', 'ok')
+
+    const res: any = await (await resreq.delete('/api?message=ok')).json()
+
+    expect(res.code).toBe(200)
+    expect(res.message).toEqual('ok')
+    expect(res.data).toEqual({ message: 'ok' })
   })
 })

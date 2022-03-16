@@ -2,7 +2,17 @@ import { Middleware, Options } from '../index'
 import cleanUrl from '../helper/cleanUrl'
 import Req from '../Req'
 
-const onRequest: Middleware = (next) => async (req: Options) => {
+interface ReqInit extends Options {
+  body?: BodyInit
+}
+
+const onRequest: Middleware = (next) => async (_req) => {
+  /**
+   * Before the initial request, req is not a Request instance, it is still just a normal object
+   * so the type needs to be fixed
+   */
+  const req = _req as ReqInit
+
   const url = Object.entries(req.params || {})
     .reduce((acc: URL, [key, value]) => {
       acc.searchParams.append(key, value)
@@ -25,8 +35,6 @@ const onRequest: Middleware = (next) => async (req: Options) => {
     req.headers.set('content-type', 'application/json')
     req.body = JSON.stringify(req.body)
   }
-
-  console.log(globalThis.FormData)
 
   const request = new Request(url, req)
   return await next(new Req(request, req))

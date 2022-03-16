@@ -11,8 +11,9 @@ export type Middleware = (next: Next) => (req: Req) => Promise<Res>
 
 export interface Options extends ReqInit {
   url?: string
-  params?: Record<string, any>
   baseUrl?: string
+  params?: Record<string, any>
+  body?: BodyInit | Record<string, any>
   fetch?: typeof fetch
 }
 
