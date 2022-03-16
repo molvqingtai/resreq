@@ -70,6 +70,7 @@ export default class Res extends Response {
     this.onResponse = init?.onResponse ?? (response as Res).onResponse
     this[ON_GLOBAL_REQUEST] = init?.[ON_GLOBAL_REQUEST] ?? (response as Res)[ON_GLOBAL_REQUEST]
     this[ON_GLOBAL_RESPONSE] = init?.[ON_GLOBAL_RESPONSE] ?? (response as Res)[ON_GLOBAL_RESPONSE]
+
     readStream(_response, (...args) => {
       this.onResponse?.(...args)
       this[ON_GLOBAL_RESPONSE]?.(...args)

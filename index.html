@@ -9,46 +9,63 @@
     <p class="progress"></p>
     <script type="module">
       import Resreq, { Req } from './dist/index.js'
+
       const resreq = new Resreq({
-        base: '/',
-        // timeout: 4000,
-        meta: {
-          test: 1
-        },
+        baseUrl: 'https://example.com/',
         headers: {
           'Content-Type': 'application/json'
-        },
-        onResponse(progress, chunk) {
-          console.log('Resreq-progress', progress)
-          // console.log('chunk', chunk)
         }
       })
 
-      resreq
-        .post('http://127.0.0.1:3000', {
-          body: {
-            a: 1,
-            b: 2
-          },
-          onResponse({ ratio, carry, total }, chunk) {
-            document.querySelector('.progress').innerHTML = `Res: ${~~ratio}% ${carry} ${total}`
-          }
+      const formData = new FormData()
+      formData.append('message', 'ok')
+      const res = await (
+        await resreq.post('/api', {
+          body: formData
         })
-        .then(async (res) => {
-          console.log('res', await res.json())
-        })
+      ).json()
+      console.log('res', res)
+      // const resreq = new Resreq({
+      //   base: '/',
+      //   // timeout: 4000,
+      //   meta: {
+      //     test: 1
+      //   },
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   onResponse(progress, chunk) {
+      //     console.log('Resreq-progress', progress)
+      //     // console.log('chunk', chunk)
+      //   }
+      // })
 
-      resreq.use((next) => async (req) => {
-        try {
-          console.log('req', req)
-          console.log('req2', new Req(req))
-          const res = await next(req)
-          console.log('res', res)
-          return res
-        } catch (error) {
-          console.log('error', error)
-        }
-      })
+      // resreq.use((next) => async (req) => {
+      //   try {
+      //     // console.log('req2', new Req(req))
+      //     console.log('req', req)
+      //     debugger
+      //     const res = await next(req)
+      //     console.log('res', res)
+      //     return res
+      //   } catch (error) {
+      //     console.log('error', error)
+      //   }
+      // })
+
+      // resreq
+      //   .post('http://127.0.0.1:3000', {
+      //     body: {
+      //       a: 1,
+      //       b: 2
+      //     },
+      //     onResponse({ ratio, carry, total }, chunk) {
+      //       document.querySelector('.progress').innerHTML = `Res: ${~~ratio}% ${carry} ${total}`
+      //     }
+      //   })
+      //   .then(async (res) => {
+      //     console.log('res', await res.json())
+      //   })
 
       // resreq
       //   .request({

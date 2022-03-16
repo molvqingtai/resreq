@@ -19,7 +19,7 @@ export default class Req extends Request {
   readonly [ON_GLOBAL_RESPONSE]?: ProgressCallback
   constructor(request: Request | Req, init?: ReqInit) {
     const abortController = new AbortController()
-    const signal = init?.signal ?? request.signal
+    const signal = init?.signal || request.signal || abortController.signal
     super(request, {
       method: init?.method ?? request.method,
       headers: init?.headers ?? request.headers,

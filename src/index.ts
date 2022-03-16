@@ -1,7 +1,5 @@
 import { ON_GLOBAL_REQUEST, ON_GLOBAL_RESPONSE } from './consts'
 import compose from './helper/compose'
-import cleanUrl from './helper/cleanUrl'
-import mergeObject from './helper/mergeObject'
 import onRequest from './middleware/onRequest'
 import onResponse from './middleware/onResponse'
 import timeout from './middleware/timeout'
@@ -11,24 +9,22 @@ import Res from './Res'
 export type Next = (req: Req) => Promise<Res>
 export type Middleware = (next: Next) => (req: Req) => Promise<Res>
 
-export interface Config extends Omit<ReqInit, 'body' | 'method'> {
+export interface Options extends ReqInit {
+  url?: string
+  params?: Record<string, any>
   baseUrl?: string
   fetch?: typeof fetch
 }
 
-export interface Options extends ReqInit {
-  url: string
-}
-
 export default class Resreq {
-  config: Config
+  options: Options
   middleware: Middleware[] = [onRequest, timeout, onResponse]
-  constructor(config: Config = {}) {
-    this.config = {
-      ...config,
-      baseUrl: config.baseUrl ?? '',
-      timeout: config.timeout ?? 10000,
-      fetch: config.fetch ?? fetch.bind(globalThis)
+  constructor(options: Options = {}) {
+    this.options = {
+      ...options,
+      baseUrl: options.baseUrl ?? '',
+      timeout: options.timeout ?? 10000,
+      fetch: options.fetch ?? fetch.bind(globalThis)
     }
   }
 
@@ -38,19 +34,18 @@ export default class Resreq {
   }
 
   async adapter(request: Request) {
-    return await this.config.fetch!(request)
+    return await this.options.fetch!(request)
   }
 
-  async request<T>(options: Options): Promise<T> {
-    const url = cleanUrl(this.config.baseUrl! + options.url)
+  async request(options: Options): Promise<Res> {
     const dispatch = compose(...this.middleware)
     return dispatch(this.adapter.bind(this))({
-      ...mergeObject(this.config, options),
-      url,
+      ...this.options,
+      ...options,
       onRequest: options.onRequest,
       onResponse: options.onResponse,
-      [ON_GLOBAL_REQUEST]: this.config.onRequest,
-      [ON_GLOBAL_RESPONSE]: this.config.onResponse
+      [ON_GLOBAL_REQUEST]: this.options.onRequest,
+      [ON_GLOBAL_RESPONSE]: this.options.onResponse
     })
   }
 
