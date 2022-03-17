@@ -1,4 +1,4 @@
-import { test, describe, beforeAll, afterAll, expect } from 'vitest'
+import { test, describe, expect } from 'vitest'
 import Server from './helper/Server'
 import Resreq from '../src'
 
@@ -8,26 +8,17 @@ interface ApiResponse {
   data: any
 }
 
-let resreq: Resreq
-const server = new Server()
-
-beforeAll(async () => {
-  const { origin } = await server.listen()
-  resreq = new Resreq({ baseUrl: origin })
-})
-afterAll(() => server.close())
-
 describe('Test methods', () => {
   test('request', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl })
+
     server.get('/api', (ctx) => {
-      try {
-        ctx.body = {
-          code: 200,
-          message: 'ok',
-          data: ctx.request.query
-        }
-      } catch (error) {
-        ctx.throw(500, error.message)
+      ctx.body = {
+        code: 200,
+        message: 'ok',
+        data: ctx.request.query
       }
     })
     const res: ApiResponse = await (
@@ -42,17 +33,20 @@ describe('Test methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual({ message: 'ok' })
+
+    server.close()
   })
+
   test('GET request with query', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl })
+
     server.get('/api', (ctx) => {
-      try {
-        ctx.body = {
-          code: 200,
-          message: 'ok',
-          data: ctx.request.query
-        }
-      } catch (error) {
-        ctx.throw(500, error.message)
+      ctx.body = {
+        code: 200,
+        message: 'ok',
+        data: ctx.request.query
       }
     })
 
@@ -61,17 +55,20 @@ describe('Test methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual({ message: 'ok' })
+
+    server.close()
   })
+
   test('GET request with params', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl })
+
     server.get('/api', (ctx) => {
-      try {
-        ctx.body = {
-          code: 200,
-          message: 'ok',
-          data: ctx.request.query
-        }
-      } catch (error) {
-        ctx.throw(500, error.message)
+      ctx.body = {
+        code: 200,
+        message: 'ok',
+        data: ctx.request.query
       }
     })
 
@@ -86,18 +83,20 @@ describe('Test methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual({ message: 'ok' })
+
+    server.close()
   })
 
   test('POST request with formData', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl })
+
     server.post('/api', (ctx) => {
-      try {
-        ctx.body = {
-          code: 200,
-          message: 'ok',
-          data: ctx.request.body
-        }
-      } catch (error) {
-        ctx.throw(500, error.message)
+      ctx.body = {
+        code: 200,
+        message: 'ok',
+        data: ctx.request.body
       }
     })
 
@@ -113,17 +112,20 @@ describe('Test methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual({ message: 'ok' })
+
+    server.close()
   })
+
   test('POST request with json', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl })
+
     server.post('/api', (ctx) => {
-      try {
-        ctx.body = {
-          code: 200,
-          message: 'ok',
-          data: ctx.request.body
-        }
-      } catch (error) {
-        ctx.throw(500, error.message)
+      ctx.body = {
+        code: 200,
+        message: 'ok',
+        data: ctx.request.body
       }
     })
 
@@ -141,15 +143,15 @@ describe('Test methods', () => {
   })
 
   test('Put request with formData', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl })
+
     server.put('/api', (ctx) => {
-      try {
-        ctx.body = {
-          code: 200,
-          message: 'ok',
-          data: ctx.request.body
-        }
-      } catch (error) {
-        ctx.throw(500, error.message)
+      ctx.body = {
+        code: 200,
+        message: 'ok',
+        data: ctx.request.body
       }
     })
 
@@ -165,18 +167,20 @@ describe('Test methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual({ message: 'ok' })
+
+    server.close()
   })
 
   test('Put request with json', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl })
+
     server.put('/api', (ctx) => {
-      try {
-        ctx.body = {
-          code: 200,
-          message: 'ok',
-          data: ctx.request.body
-        }
-      } catch (error) {
-        ctx.throw(500, error.message)
+      ctx.body = {
+        code: 200,
+        message: 'ok',
+        data: ctx.request.body
       }
     })
 
@@ -191,18 +195,20 @@ describe('Test methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual({ message: 'ok' })
+
+    server.close()
   })
 
   test('Delete request', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl })
+
     server.delete('/api', (ctx) => {
-      try {
-        ctx.body = {
-          code: 200,
-          message: 'ok',
-          data: ctx.request.query
-        }
-      } catch (error) {
-        ctx.throw(500, error.message)
+      ctx.body = {
+        code: 200,
+        message: 'ok',
+        data: ctx.request.query
       }
     })
 
@@ -211,5 +217,7 @@ describe('Test methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual({ message: 'ok' })
+
+    server.close()
   })
 })

@@ -9,7 +9,7 @@
     "server": "nodemon src/server",
     "dev": "esbuild src/index.ts --watch --sourcemap --bundle --format=esm --outdir=dist",
     "build": "esbuild src/index.ts --bundle --format=esm --outdir=dist",
-    "lint": "eslint src --ext .js,.ts --fix",
+    "lint": "eslint src __tests__ --ext .js,.ts --fix",
     "prepare": "husky install",
     "test": "vitest"
   },

@@ -8,7 +8,7 @@ interface OverrideReqInit extends Options {
 
 const requestHandler: Middleware = (next) => async (_req) => {
   /**
-   * Before the initial request, req is not a Request instance
+   * Before the initial request, the req is just an options object
    * it's still just a plain object and extends body So need to override type
    */
   const req = _req as OverrideReqInit
@@ -38,7 +38,13 @@ const requestHandler: Middleware = (next) => async (_req) => {
 
   const request = new Request(url, req)
 
-  return await next(new Req(request, req))
+  /**
+   * Because in Req will determine whether the user passed in the url
+   * if the url exists, then Req will be created based on the new url
+   * so here you need to delete the url
+   */
+  Reflect.deleteProperty(req, 'url')
+  return await next(new Req(request as Req, req))
 }
 
 export default requestHandler

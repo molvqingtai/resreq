@@ -5,14 +5,3 @@ interface Progress {
 }
 
 type ProgressCallback = (progress: Progress, chunk: Uint8Array) => void
-
-interface ExtendInit {
-  url?: string
-  baseUrl?: string
-  params?: Record<string, any>
-  meta?: Record<string, any>
-  timeout?: number
-  throwHttpErrors?: boolean
-  onRequestProgress?: ProgressCallback
-  onResponseProgress?: ProgressCallback
-}

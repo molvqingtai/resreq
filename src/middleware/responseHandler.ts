@@ -11,7 +11,13 @@ const readStream = (response: Response, onResponseProgress: ProgressCallback) =>
        * While the byteLength is the size after the file has been extracted.
        */
       const total = +response.headers.get('content-length')! || 0
-      const reader = response.clone().body!.getReader()
+
+      /**
+       * node-fetch does not support the getReader
+       * so OnResponseProgress will not work
+       */
+      const reader = response.body!.getReader()
+
       let carry = 0
 
       onResponseProgress(
@@ -44,9 +50,10 @@ const readStream = (response: Response, onResponseProgress: ProgressCallback) =>
   })
 
 const responseHandler: Middleware = (next) => async (req) => {
+  // Here is the native Response
   const response = await next(req)
 
-  if (req.throwHttpErrors && !response.ok) {
+  if (req.throwHttpError && !response.ok) {
     throw new Error(`${response.status} ${response.statusText}`)
   }
 

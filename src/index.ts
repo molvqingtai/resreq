@@ -10,8 +10,11 @@ export type Next = (req: Req) => Promise<Res>
 export type Middleware = (next: Next) => (req: Req) => Promise<Res>
 
 export interface Options extends Omit<ReqInit, 'body'> {
-  fetch?: typeof fetch
   body?: BodyInit | Record<string, any>
+  baseUrl?: string
+  params?: Record<string, any>
+  timeout?: number
+  throwHttpError?: boolean
 }
 
 export default class Resreq {
@@ -20,23 +23,25 @@ export default class Resreq {
   constructor(options: Options = {}) {
     this.options = {
       ...options,
-      baseUrl: options.baseUrl ?? '',
-      timeout: options.timeout ?? 10000
+      baseUrl: options.baseUrl || '',
+      timeout: options.timeout || 10000,
+      throwHttpError: options.throwHttpError || false
     }
   }
 
-  use(middleware: Middleware) {
-    this.middleware = [...this.middleware, middleware]
+  use(middleware: Middleware | Middleware[]) {
+    /**
+     * The response is first handled by the responseHandler
+     * so it must be placed last
+     */
+    const responseHandler = this.middleware.pop()!
+    this.middleware = [...this.middleware, ...[middleware].flat(), responseHandler]
     return this
-  }
-
-  async adapter(request: Request) {
-    return await fetch(request)
   }
 
   async request(options: Options): Promise<Res> {
     const dispatch = compose(...this.middleware)
-    return dispatch(this.adapter.bind(this))({
+    return dispatch(fetch)({
       ...this.options,
       ...options,
       onRequestProgress: options.onRequestProgress,
@@ -62,8 +67,8 @@ export default class Resreq {
     return await this.request({ ...options, url, method: 'DELETE' })
   }
 
-  async path(url: string, options?: Options) {
-    return await this.request({ ...options, url, method: 'path' })
+  async patch(url: string, options?: Options) {
+    return await this.request({ ...options, url, method: 'PATCH' })
   }
 
   async head(url: string, options?: Options) {

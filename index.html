@@ -11,19 +11,20 @@
       import Resreq, { Req } from './dist/index.js'
 
       const resreq = new Resreq({
-        baseUrl: 'https://example.com/',
+        baseUrl: 'http://127.0.0.1:8080/',
         headers: {
           'Content-Type': 'application/json'
         }
       })
 
-      const formData = new FormData()
-      formData.append('message', 'ok')
-      const res = await (
-        await resreq.post('/api', {
-          body: formData
-        })
-      ).json()
+      await resreq.get('http://127.0.0.1:8080/', {
+        onResponseProgress: (progress) => {
+          debugger
+          console.log(progress)
+          document.querySelector('.progress').innerText = `${progress}%`
+        }
+      })
+
       console.log('res', res)
       // const resreq = new Resreq({
       //   base: '/',
