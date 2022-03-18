@@ -1,5 +1,5 @@
 import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS } from './consts'
-import compose from './helper/compose'
+import compose from './helpers/compose'
 import requestHandler from './middleware/requestHandler'
 import responseHandler from './middleware/responseHandler'
 import timeout from './middleware/timeout'
@@ -9,12 +9,9 @@ import Res from './Res'
 export type Next = (req: Req) => Promise<Res>
 export type Middleware = (next: Next) => (req: Req) => Promise<Res>
 
-export interface Options extends Omit<ReqInit, 'body'> {
-  body?: BodyInit | Record<string, any>
+export interface Options extends ReqInit {
   baseUrl?: string
   params?: Record<string, any>
-  timeout?: number
-  throwHttpError?: boolean
 }
 
 export default class Resreq {
@@ -31,11 +28,12 @@ export default class Resreq {
 
   use(middleware: Middleware | Middleware[]) {
     /**
-     * The response is first handled by the responseHandler
-     * so it must be placed last
+     * Users can modify request.timeout through middleware, so it must be placed last
+     * The response is first handled by the responseHandler，so it must be placed last
      */
     const responseHandler = this.middleware.pop()!
-    this.middleware = [...this.middleware, ...[middleware].flat(), responseHandler]
+    const timeout = this.middleware.pop()!
+    this.middleware = [...this.middleware, ...[middleware].flat(), timeout, responseHandler]
     return this
   }
 

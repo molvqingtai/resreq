@@ -1,5 +1,5 @@
 import { test, describe, expect, vi } from 'vitest'
-import Server from './helper/Server'
+import Server from './helpers/Server'
 import Resreq from '../src'
 
 describe('Test middleware', () => {

@@ -1,11 +1,12 @@
 import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS } from './consts'
-
-export interface ReqInit extends RequestInit {
+import isJsonBody from './helpers/isJsonBody'
+export interface ReqInit extends Omit<RequestInit, 'body'> {
   url?: string
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'PATCH'
   meta?: Record<string, any>
   timeout?: number
   throwHttpError?: boolean
+  body?: BodyInit | Record<string, any>
   abortController?: AbortController
   onRequestProgress?: ProgressCallback
   onResponseProgress?: ProgressCallback
@@ -23,13 +24,37 @@ export default class Req extends Request {
   readonly [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback;
   readonly [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
   constructor(request: Req, init?: ReqInit) {
+    /**
+     * If he init.body is JSON, reset Header and Body
+     * Reference: https://github.com/axios/axios/blob/master/lib/defaults/index.js#L71
+     */
+    let body = init?.body as BodyInit
+    const headers = new Headers(init?.headers ?? request.headers)
+
+    if (body && isJsonBody(body)) {
+      headers.set('Content-Type', 'application/json')
+      try {
+        body = JSON.stringify(body)
+      } catch (error) {
+        throw new TypeError(`Request body must be a valid JSON object.`)
+      }
+    } else {
+      headers.delete('Content-Type')
+    }
+
     const abortController = init?.abortController ?? new AbortController()
-    const signal = init?.signal || request.signal
+
+    /**
+     * Signal is empty in node-fetch and whatwg-fetch
+     * so need to add abortController.signal
+     * Reference: https://github.com/github/fetch/pull/1003
+     */
+    const signal = init?.signal || request.signal || abortController.signal
 
     super(new Request(init?.url ?? request.url, request), {
       method: init?.method ?? request.method,
-      headers: init?.headers ?? request.headers,
-      body: init?.body ?? request.body,
+      headers: headers,
+      body: body ?? request.body,
       mode: init?.mode ?? request.mode,
       credentials: init?.credentials ?? request.credentials,
       cache: init?.cache ?? request.cache,
@@ -42,12 +67,10 @@ export default class Req extends Request {
     })
 
     this.meta = init?.meta ?? request.meta
-    // TODO: use Symbol
-    this.timeout = init?.timeout ?? request.timeout
+    this.timeout = init?.timeout ?? request?.timeout
     this.throwHttpError = init?.throwHttpError ?? request.throwHttpError
     this.onRequestProgress = init?.onRequestProgress ?? request.onRequestProgress
     this.onResponseProgress = init?.onResponseProgress ?? request.onResponseProgress
-
     this[ON_GLOBAL_REQUEST_PROGRESS] = init?.[ON_GLOBAL_REQUEST_PROGRESS] ?? request[ON_GLOBAL_REQUEST_PROGRESS]
     this[ON_GLOBAL_RESPONSE_PROGRESS] = init?.[ON_GLOBAL_RESPONSE_PROGRESS] ?? request[ON_GLOBAL_RESPONSE_PROGRESS]
     this.abortController = abortController

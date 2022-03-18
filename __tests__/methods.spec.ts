@@ -1,5 +1,5 @@
 import { test, describe, expect } from 'vitest'
-import Server from './helper/Server'
+import Server from './helpers/Server'
 import Resreq from '../src'
 
 interface ApiResponse {
@@ -24,7 +24,7 @@ describe('Test methods', () => {
     const res: ApiResponse = await (
       await resreq.request({
         url: '/api',
-        method: 'get',
+        method: 'GET',
         params: {
           message: 'ok'
         }
@@ -140,6 +140,30 @@ describe('Test methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual({ message: 'ok' })
+  })
+
+  test('POST request with string', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl })
+
+    server.post('/api', (ctx) => {
+      ctx.body = {
+        code: 200,
+        message: 'ok',
+        data: ctx.request.body
+      }
+    })
+
+    const res: any = await (
+      await resreq.post('/api', {
+        body: 'ok'
+      })
+    ).json()
+
+    expect(res.code).toBe(200)
+    expect(res.message).toEqual('ok')
+    expect(res.data).toEqual('ok')
   })
 
   test('Put request with formData', async () => {

@@ -1,5 +1,5 @@
 import { test, describe, expect } from 'vitest'
-import Server from './helper/Server'
+import Server from './helpers/Server'
 import Resreq from '../src'
 
 describe('Test errors', () => {

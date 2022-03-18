@@ -1,5 +1,5 @@
 import { Middleware, Options } from '../index'
-import cleanUrl from '../helper/cleanUrl'
+import cleanUrl from '../helpers/cleanUrl'
 import Req from '../Req'
 
 interface OverrideReqInit extends Options {
@@ -8,8 +8,8 @@ interface OverrideReqInit extends Options {
 
 const requestHandler: Middleware = (next) => async (_req) => {
   /**
-   * Before the initial request, the req is just an options object
-   * it's still just a plain object and extends body So need to override type
+   * Before the initial request, the req is just an options object，So need to override type
+   * JSON Body will be processed in the following new Req()
    */
   const req = _req as OverrideReqInit
 
@@ -20,30 +20,15 @@ const requestHandler: Middleware = (next) => async (_req) => {
     }, new URL(cleanUrl((req.baseUrl || '') + (req.url || ''))))
     .toString()
 
-  req.headers = new Headers(req.headers)
-
-  if (
-    // Types not supported by node, first determine if they exist
-    (globalThis.FormData && req.body instanceof FormData) ||
-    (globalThis.Blob && req.body instanceof Blob) ||
-    req.body instanceof ArrayBuffer ||
-    req.body instanceof URLSearchParams ||
-    req.body instanceof ReadableStream
-  ) {
-    req.headers.delete('content-type')
-  } else if (req.body && typeof req.body !== 'string') {
-    req.headers.set('content-type', 'application/json')
-    req.body = JSON.stringify(req.body)
-  }
-
   const request = new Request(url, req)
 
   /**
    * Because in Req will determine whether the user passed in the url
    * if the url exists, then Req will be created based on the new url
-   * so here you need to delete the url
+   * so here need to delete the url
    */
   Reflect.deleteProperty(req, 'url')
+
   return await next(new Req(request as Req, req))
 }
 
