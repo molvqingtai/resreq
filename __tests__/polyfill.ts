@@ -2,7 +2,7 @@ import 'web-streams-polyfill'
 import fetch, { Headers, Request, Response } from 'node-fetch'
 import AbortController from 'abort-controller'
 
-import { FormData } from 'formdata-node'
+import { FormData, Blob } from 'formdata-node'
 
 globalThis.AbortController = AbortController
 // @ts-expect-error
@@ -14,3 +14,5 @@ globalThis.Request = Request
 globalThis.Response = Response
 // @ts-expect-error
 globalThis.FormData = FormData
+// @ts-expect-error
+globalThis.Blob = Blob

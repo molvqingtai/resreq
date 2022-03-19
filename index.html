@@ -11,7 +11,7 @@
       import Resreq, { Req } from './dist/index.js'
 
       const resreq = new Resreq({
-        baseUrl: 'http://127.0.0.1:8080/'
+        baseUrl: ''
       })
       const formData = new FormData()
       formData.append('message', 'no')
@@ -20,7 +20,10 @@
         const formData = new FormData()
         formData.append('message', 'no')
         const _req = new Req(req, {
-          body: 'ok'
+          Headers: {
+            'Content-Type': 'text/plain;charset=UTF-8'
+          },
+          body: new Uint8Array([111, 107])
         })
         return await next(_req)
       })

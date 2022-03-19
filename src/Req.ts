@@ -38,12 +38,16 @@ export default class Req extends Request {
       } catch (error) {
         throw new TypeError(`Request body must be a valid JSON object.`)
       }
-    } else {
-      /**
-       * To provide correct form boundary
-       * Content-Type header should be deleted each time when new Request instantiated from another one
-       * Reference: https://github.com/sindresorhus/ky/blob/de66c1613ebc4c01d16ae970c20867513347b5c6/source/core/Ky.ts#L172
-       */
+    }
+
+    /**
+     * If the body is a FormData or URLSearchParams
+     * have it automatically request the Content-Type
+     * https://github.com/sindresorhus/ky/blob/de66c1613ebc4c01d16ae970c20867513347b5c6/source/core/Ky.ts#L168
+     * https://github.com/axios/axios/blob/e52e4dbb575fc8bd9cb7d2f5306f30ee82b40b4d/lib/defaults/index.js#L67
+     * https://github.com/axios/axios/blob/e52e4dbb575fc8bd9cb7d2f5306f30ee82b40b4d/lib/adapters/xhr.js#L31
+     */
+    if ((globalThis.FormData && body instanceof FormData) || body instanceof URLSearchParams) {
       headers.delete('Content-Type')
     }
 
@@ -56,6 +60,9 @@ export default class Req extends Request {
      */
     const signal = init?.signal || request.signal || abortController.signal
 
+    /**
+     * If the user passes in a new url, a new request object is created with the new url
+     */
     super(new Request(init?.url ?? request.url, request), {
       method: init?.method ?? request.method,
       headers: headers,
