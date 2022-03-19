@@ -124,3 +124,5 @@ describe('Test options', () => {
 // TODO
 // timeout TEST
 // signal TEST
+// POST more body type
+// abortController

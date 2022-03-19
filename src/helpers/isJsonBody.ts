@@ -5,6 +5,7 @@ const isJsonBody = (body: Body | BodyInit | Record<string, any>) => {
    */
   return (
     body &&
+    typeof body === 'object' &&
     !(
       (globalThis.FormData && body instanceof FormData) ||
       (globalThis.Blob && body instanceof Blob) ||
@@ -12,8 +13,7 @@ const isJsonBody = (body: Body | BodyInit | Record<string, any>) => {
       body instanceof ArrayBuffer ||
       ArrayBuffer?.isView(body) ||
       body instanceof URLSearchParams ||
-      body instanceof ReadableStream ||
-      typeof body === 'string'
+      body instanceof ReadableStream
     )
   )
 }

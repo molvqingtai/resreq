@@ -54,4 +54,8 @@ export default class Server {
   close() {
     this.server.close()
   }
+
+  on(event: string, listener: (...args: any[]) => void) {
+    this.app.on(event, listener)
+  }
 }

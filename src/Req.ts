@@ -39,6 +39,11 @@ export default class Req extends Request {
         throw new TypeError(`Request body must be a valid JSON object.`)
       }
     } else {
+      /**
+       * To provide correct form boundary
+       * Content-Type header should be deleted each time when new Request instantiated from another one
+       * Reference: https://github.com/sindresorhus/ky/blob/de66c1613ebc4c01d16ae970c20867513347b5c6/source/core/Ky.ts#L172
+       */
       headers.delete('Content-Type')
     }
 
