@@ -33,6 +33,6 @@ export default class Res extends Response {
     this.onResponseProgress = init?.onResponseProgress ?? response.onResponseProgress
     this[ON_GLOBAL_REQUEST_PROGRESS] = init?.[ON_GLOBAL_REQUEST_PROGRESS] ?? response[ON_GLOBAL_REQUEST_PROGRESS]
     this[ON_GLOBAL_RESPONSE_PROGRESS] = init?.[ON_GLOBAL_RESPONSE_PROGRESS] ?? response[ON_GLOBAL_RESPONSE_PROGRESS]
-    this.abortController = init.abortController
+    this.abortController = init.abortController ?? response.abortController
   }
 }
