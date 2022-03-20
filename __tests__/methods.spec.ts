@@ -8,7 +8,7 @@ interface ApiResponse {
   data: any
 }
 
-describe('Test methods', () => {
+describe('Test request methods', () => {
   test('request', async () => {
     const server = new Server()
     const { origin: baseUrl } = await server.listen()

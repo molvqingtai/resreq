@@ -1,6 +1,6 @@
 import { Middleware } from '../index'
 import Res from '../Res'
-import { ON_GLOBAL_RESPONSE_PROGRESS } from '../consts'
+import { ON_GLOBAL_RESPONSE_PROGRESS } from '../constants'
 
 const createReadableStream = (response: Response, onResponseProgress: ProgressCallback) =>
   new ReadableStream({
@@ -16,7 +16,10 @@ const createReadableStream = (response: Response, onResponseProgress: ProgressCa
        * node-fetch does not support the getReader
        * so OnResponseProgress will not work
        */
-      const reader = response.body!.getReader()
+      if (!response.body?.getReader) {
+        return controller.close()
+      }
+      const reader = response.body.getReader()
 
       let carry = 0
 
@@ -57,17 +60,24 @@ const responseHandler: Middleware = (next) => async (req) => {
     throw new Error(`${response.status} ${response.statusText}`)
   }
 
-  const readableStream = createReadableStream(response.clone(), (...args) => {
+  createReadableStream(response.clone(), (...args) => {
     response.onResponseProgress?.(...args)
     req[ON_GLOBAL_RESPONSE_PROGRESS]?.(...args)
   })
 
   /**
+   * TODO: When timeout middleware can use AbortSignal.reason to throw error to cancel comments
+   *
    * Close stream when requesting cancel
    */
-  req.abortController.signal.addEventListener('abort', () => {
-    void readableStream.cancel()
-  })
+  //  const readableStream = createReadableStream(response.clone(), (...args) => {
+  //   response.onResponseProgress?.(...args)
+  //   req[ON_GLOBAL_RESPONSE_PROGRESS]?.(...args)
+  // })
+  // req[ABORT_CONTROLLER].signal.addEventListener('abort', () => {
+  //   debugger
+  //   void readableStream.cancel()
+  // })
 
   return new Res(response, req)
 }

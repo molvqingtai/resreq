@@ -47,7 +47,7 @@ describe('Test errors', () => {
     server.close()
   })
 
-  test('Fetch error with get', async () => {
+  test('Fetch error with body', async () => {
     const server = new Server()
     const { origin: baseUrl } = await server.listen()
     const resreq = new Resreq({ baseUrl })
@@ -55,5 +55,23 @@ describe('Test errors', () => {
     await expect(resreq.get('/', { body: {} })).rejects.toThrowError(/cannot have body/)
 
     server.close()
+  })
+
+  test('Http eror with cancel', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl })
+
+    server.get('/api', async (ctx) => {
+      ctx.status = 200
+    })
+
+    const abortController = new AbortController()
+    const res = resreq.request({
+      url: '/api',
+      signal: abortController.signal
+    })
+    abortController.abort()
+    await expect(res).rejects.toThrowError(/abort/)
   })
 })

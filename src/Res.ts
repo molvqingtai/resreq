@@ -1,10 +1,9 @@
-import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS } from './consts'
+import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS } from './constants'
 
 export interface ResInit extends ResponseInit {
   meta?: Record<string, any>
   timeout: number
   throwHttpError: boolean
-  abortController: AbortController
   onRequestProgress?: ProgressCallback
   onResponseProgress?: ProgressCallback
   [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback
@@ -15,7 +14,6 @@ export default class Res extends Response {
   readonly meta: Record<string, any>
   readonly timeout: number
   readonly throwHttpError: boolean
-  readonly abortController: AbortController
   readonly onRequestProgress?: ProgressCallback
   readonly onResponseProgress?: ProgressCallback;
   readonly [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback;
@@ -33,6 +31,5 @@ export default class Res extends Response {
     this.onResponseProgress = init?.onResponseProgress ?? response.onResponseProgress
     this[ON_GLOBAL_REQUEST_PROGRESS] = init?.[ON_GLOBAL_REQUEST_PROGRESS] ?? response[ON_GLOBAL_REQUEST_PROGRESS]
     this[ON_GLOBAL_RESPONSE_PROGRESS] = init?.[ON_GLOBAL_RESPONSE_PROGRESS] ?? response[ON_GLOBAL_RESPONSE_PROGRESS]
-    this.abortController = init.abortController ?? response.abortController
   }
 }

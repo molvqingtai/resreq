@@ -1,4 +1,4 @@
-import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS } from './consts'
+import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS, ABORT_CONTROLLER } from './constants'
 import isJsonBody from './helpers/isJsonBody'
 export interface ReqInit extends Omit<RequestInit, 'body'> {
   url?: string
@@ -7,7 +7,6 @@ export interface ReqInit extends Omit<RequestInit, 'body'> {
   timeout?: number
   throwHttpError?: boolean
   body?: BodyInit | Record<string, any>
-  abortController?: AbortController
   onRequestProgress?: ProgressCallback
   onResponseProgress?: ProgressCallback
   [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback
@@ -17,8 +16,8 @@ export interface ReqInit extends Omit<RequestInit, 'body'> {
 export default class Req extends Request {
   readonly meta?: Record<string, any>
   readonly timeout: number
-  readonly throwHttpError: boolean
-  readonly abortController: AbortController
+  readonly throwHttpError: boolean;
+  readonly [ABORT_CONTROLLER]: AbortController
   readonly onRequestProgress?: ProgressCallback
   readonly onResponseProgress?: ProgressCallback;
   readonly [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback;
@@ -53,7 +52,7 @@ export default class Req extends Request {
       headers.delete('Content-Type')
     }
 
-    const abortController = init?.abortController ?? new AbortController()
+    const abortController = new AbortController()
 
     /**
      * Signal is empty in node-fetch and whatwg-fetch
@@ -91,7 +90,7 @@ export default class Req extends Request {
     this.onResponseProgress = init?.onResponseProgress ?? request.onResponseProgress
     this[ON_GLOBAL_REQUEST_PROGRESS] = init?.[ON_GLOBAL_REQUEST_PROGRESS] ?? request[ON_GLOBAL_REQUEST_PROGRESS]
     this[ON_GLOBAL_RESPONSE_PROGRESS] = init?.[ON_GLOBAL_RESPONSE_PROGRESS] ?? request[ON_GLOBAL_RESPONSE_PROGRESS]
-    this.abortController = abortController
-    signal.onabort = abortController.abort
+    this[ABORT_CONTROLLER] = abortController
+    signal.addEventListener('abort', () => abortController.abort())
   }
 }

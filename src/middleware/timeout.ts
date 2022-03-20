@@ -1,3 +1,4 @@
+import { ABORT_CONTROLLER } from '../constants'
 import { Middleware } from '../index'
 
 /**
@@ -7,18 +8,31 @@ import { Middleware } from '../index'
  * https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout
  */
 const timeout: Middleware = (next) => async (req) => {
-  const timer = setTimeout(() => req.abortController.abort(), req.timeout || 2147483647)
-  try {
-    return await next(req)
-  } catch (error) {
-    if (req.signal.aborted) {
-      throw new Error(`network timeout at: ${req.url}`)
-    } else {
-      throw error
-    }
-  } finally {
-    clearTimeout(timer)
-  }
+  return await new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      req[ABORT_CONTROLLER].abort()
+      reject(new Error(`Network timeout at: ${req.url}`))
+    }, req.timeout || 2147483647)
+
+    void next(req)
+      .then(resolve)
+      .catch(reject)
+      .then(() => clearTimeout(timer))
+  })
+
+  /**
+   * TODO: When all browsers have realize AbortSignal.reason cancel comments
+   * References：https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/reason
+   */
+  // const timer = setTimeout(
+  //   () => req[ABORT_CONTROLLER].abort(`Network timeout at: ${req.url}`),
+  //   req.timeout || 2147483647
+  // )
+  // try {
+  //   return await next(req)
+  // } finally {
+  //   clearTimeout(timer)
+  // }
 }
 
 export default timeout

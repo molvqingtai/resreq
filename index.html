@@ -10,31 +10,16 @@
     <script type="module">
       import Resreq, { Req } from './dist/index.js'
 
-      const resreq = new Resreq({
-        baseUrl: ''
-      })
-      const formData = new FormData()
-      formData.append('message', 'no')
+      const resreq = new Resreq()
 
-      resreq.use((next) => async (req) => {
-        console.log(req.credentials)
-        debugger
-        const formData = new FormData()
-        formData.append('message', 'no')
-        const _req = new Req(req, {
-          Headers: {
-            'Content-Type': 'text/plain;charset=UTF-8'
-          },
-          body: new Uint8Array([111, 107])
-        })
-        return await next(_req)
-      })
+      const abortController = new AbortController()
 
-      const res = await resreq.post('http://127.0.0.1:8080/', {
-        body: formData
+      const res = resreq.get('http://127.0.0.1:8080/', {
+        signal: abortController.signal
       })
 
       console.log('res', res)
+      abortController.abort()
       // const resreq = new Resreq({
       //   base: '/',
       //   // timeout: 4000,
