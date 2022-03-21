@@ -110,7 +110,7 @@ resreq.use((next) => async (req) => {
     console.log(res) // Response can be changed here
     return res
   } catch (error) {
-    console.log(error) // catch errors here
+    console.log(error) // Catch errors here
     throw error
   }
 })
