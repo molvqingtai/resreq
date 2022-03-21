@@ -1,4 +1,4 @@
-import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS } from './constants'
+import { ON_GLOBAL_RESPONSE_PROGRESS } from './constants'
 import compose from './helpers/compose'
 import requestHandler from './middleware/requestHandler'
 import responseHandler from './middleware/responseHandler'
@@ -42,9 +42,9 @@ export default class Resreq {
     return dispatch(fetch)({
       ...this.options,
       ...options,
-      onRequestProgress: options.onRequestProgress,
+      // onRequestProgress: options.onRequestProgress,
       onResponseProgress: options.onResponseProgress,
-      [ON_GLOBAL_REQUEST_PROGRESS]: this.options.onRequestProgress,
+      // [ON_GLOBAL_REQUEST_PROGRESS]: this.options.onRequestProgress,
       [ON_GLOBAL_RESPONSE_PROGRESS]: this.options.onResponseProgress
     })
   }

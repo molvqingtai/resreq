@@ -2,8 +2,8 @@ import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS } from './const
 
 export interface ResInit extends ResponseInit {
   meta?: Record<string, any>
-  timeout: number
-  throwHttpError: boolean
+  timeout?: number
+  throwHttpError?: boolean
   onRequestProgress?: ProgressCallback
   onResponseProgress?: ProgressCallback
   [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback

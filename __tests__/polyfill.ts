@@ -1,6 +1,5 @@
 import fetch, { Headers, Request, Response } from 'node-fetch'
 import AbortController from 'abort-controller'
-
 import { FormData, Blob } from 'formdata-node'
 
 globalThis.AbortController = AbortController

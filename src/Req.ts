@@ -8,7 +8,7 @@ export interface ReqInit extends Omit<RequestInit, 'body'> {
   timeout?: number
   throwHttpError?: boolean
   body?: BodyInit | Record<string, any>
-  onRequestProgress?: ProgressCallback
+  // onRequestProgress?: ProgressCallback
   onResponseProgress?: ProgressCallback
   [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback
   [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
@@ -87,7 +87,7 @@ export default class Req extends Request {
     this.meta = init?.meta ?? request.meta
     this.timeout = init?.timeout ?? request?.timeout
     this.throwHttpError = init?.throwHttpError ?? request.throwHttpError
-    this.onRequestProgress = init?.onRequestProgress ?? request.onRequestProgress
+    // this.onRequestProgress = init?.onRequestProgress ?? request.onRequestProgress
     this.onResponseProgress = init?.onResponseProgress ?? request.onResponseProgress
     this[ON_GLOBAL_REQUEST_PROGRESS] = init?.[ON_GLOBAL_REQUEST_PROGRESS] ?? request[ON_GLOBAL_REQUEST_PROGRESS]
     this[ON_GLOBAL_RESPONSE_PROGRESS] = init?.[ON_GLOBAL_RESPONSE_PROGRESS] ?? request[ON_GLOBAL_RESPONSE_PROGRESS]

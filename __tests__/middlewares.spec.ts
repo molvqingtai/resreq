@@ -193,7 +193,7 @@ describe('Test overload options', () => {
     resreq.use((next) => async (req) => {
       const _req = new Req(req, {
         headers: {
-          'X-Custom-Header': 'custom'
+          'X-Custom-Header': 'bar'
         }
       })
       return await next(_req)
@@ -202,7 +202,7 @@ describe('Test overload options', () => {
     const value = (
       await resreq.get('/api', {
         headers: {
-          'X-Custom-Header': 'custom2'
+          'X-Custom-Header': 'foo'
         }
       })
     ).headers.get('X-Custom-Header')
