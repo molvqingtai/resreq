@@ -219,7 +219,7 @@ console.log(res.headers.get('X-Custom-Header')) // bar
 
 
 
-**Req & Res**
+**Req(req:Req, init?:ReqInit) & Res(res:Res, init?:ResInit)**
 
 In the middleware, use `new Req()` and `new Res()` to rewrite the request and response
 
