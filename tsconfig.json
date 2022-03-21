@@ -19,5 +19,5 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "moduleResolution": "Node"
   },
-  "include": ["src", "__tests__"]
+  "include": ["**/*.ts", "**/*.js"]
 }

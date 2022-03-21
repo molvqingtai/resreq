@@ -1,21 +1,49 @@
 {
   "name": "resreq",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Fetch-based onion model http client.",
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
   "type": "module",
   "scripts": {
-    "client": "live-server --port=8080",
-    "server": "nodemon src/server",
-    "dev": "esbuild src/index.ts --watch --sourcemap --bundle --format=esm --outdir=dist",
-    "build": "esbuild src/index.ts --bundle --format=esm --outdir=dist",
+    "dev": "tsc --build tsconfig.dist.json --watch",
+    "build": "tsc --build tsconfig.dist.json",
     "lint": "eslint src __tests__ --ext .js,.ts --fix",
     "prepare": "husky install",
     "test": "vitest"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "fetch",
+    "request",
+    "requests",
+    "http",
+    "https",
+    "fetching",
+    "get",
+    "url",
+    "curl",
+    "wget",
+    "net",
+    "network",
+    "ajax",
+    "api",
+    "rest",
+    "xhr",
+    "browser",
+    "got",
+    "axios",
+    "node-fetch"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/molvqingtai/resreq.git"
+  },
+  "author": "molvqingtai",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/molvqingtai/resreq/issues"
+  },
+  "homepage": "https://github.com/molvqingtai/resreq#readme",
   "devDependencies": {
     "@commitlint/cli": "^13.2.1",
     "@commitlint/config-conventional": "^13.2.0",
@@ -27,8 +55,8 @@
     "@types/whatwg-fetch": "^0.0.33",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.2.0",
+    "@vitest/ui": "^0.7.6",
     "abort-controller": "^3.0.0",
-    "esbuild": "^0.13.12",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
@@ -44,12 +72,9 @@
     "node-fetch": "^3.2.3",
     "prettier": "^2.4.1",
     "typescript": "^4.4.4",
-    "vitest": "^0.6.1"
+    "vitest": "^0.7.6"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "msw": "^0.39.2"
   }
 }

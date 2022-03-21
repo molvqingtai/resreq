@@ -1,5 +1,0 @@
-// https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/parser/README.md#parseroptionsproject
-{
-  "extends": "./tsconfig.json",
-  "include": ["**/*.ts", "**/*.js"]
-}

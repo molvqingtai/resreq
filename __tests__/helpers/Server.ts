@@ -24,7 +24,7 @@ export default class Server {
   async listen(port?: number): Promise<ServerInfo> {
     return await new Promise((resolve) => {
       this.server = this.app.listen(port)
-      this.server.on('listening', (e) => {
+      this.server.on('listening', () => {
         const port: number = this.server.address().port
         resolve({
           port,
