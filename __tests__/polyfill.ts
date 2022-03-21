@@ -1,11 +1,9 @@
-import 'web-streams-polyfill'
 import fetch, { Headers, Request, Response } from 'node-fetch'
-// import AbortController from 'abort-controller'
+import AbortController from 'abort-controller'
 
 import { FormData, Blob } from 'formdata-node'
-// import FormData from 'form-data'
 
-// globalThis.AbortController = AbortController
+globalThis.AbortController = AbortController
 // @ts-expect-error
 globalThis.fetch = fetch
 globalThis.Headers = Headers

@@ -1,6 +1,7 @@
 import { test, describe, expect } from 'vitest'
 import Server from './helpers/Server'
 import Resreq from '../src'
+import sleep from './helpers/sleep'
 
 describe('Test errors', () => {
   test('Http error with 500', async () => {
@@ -57,7 +58,7 @@ describe('Test errors', () => {
     server.close()
   })
 
-  test('Http eror with cancel', async () => {
+  test('Http error with cancel', async () => {
     const server = new Server()
     const { origin: baseUrl } = await server.listen()
     const resreq = new Resreq({ baseUrl })
@@ -73,5 +74,21 @@ describe('Test errors', () => {
     })
     abortController.abort()
     await expect(res).rejects.toThrowError(/abort/)
+  })
+
+  test('Http error with timout', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl, timeout: 300 })
+
+    server.get('/api', async (ctx) => {
+      await sleep(500)
+      ctx.status = 200
+    })
+
+    const res = resreq.request({
+      url: '/api'
+    })
+    await expect(res).rejects.toThrowError(/timeout/)
   })
 })
