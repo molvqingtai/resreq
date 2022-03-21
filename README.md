@@ -136,7 +136,7 @@ const resreq = new Resreq({
   timeout: 10000,
   throwHttpError: true,
   onResponseProgress:(progress: Progress, chunk: Uint8Array){
-  	console.log(progress,chunk)
+    console.log(progress,chunk)
   }
 })
 ```
@@ -158,7 +158,7 @@ const res = await resreq.request({
   params: { foo: 'bar' },
   throwHttpError: true,
   onResponseProgress:(progress: Progress, chunk: Uint8Array){
- 	  console.log(progress,chunk)
+    console.log(progress,chunk)
   }
 })
 
@@ -310,8 +310,8 @@ ResInit extends from the [ResponseInit](https://developer.mozilla.org/en-US/docs
 ```typescript
 interface ResInit extends ResponseInit {
   meta?: Record<string, any>
-  timeout: number
-  throwHttpError: boolean
+  timeout?: number
+  throwHttpError?: boolean
   onResponseProgress?: ProgressCallback
 }
 ```
