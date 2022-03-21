@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsc --build tsconfig.dist.json --watch",
-    "build": "tsc --build tsconfig.dist.json",
+    "build": "rm -rf dist && tsc --build tsconfig.dist.json",
     "lint": "eslint src __tests__ --ext .js,.ts --fix",
     "prepare": "husky install",
     "test": "vitest"
