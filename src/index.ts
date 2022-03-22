@@ -3,6 +3,7 @@ import compose from './helpers/compose'
 import requestHandler from './middleware/requestHandler'
 import responseHandler from './middleware/responseHandler'
 import timeout from './middleware/timeout'
+import mergeHeaders from './helpers/mergeHeaders'
 import Req, { ReqInit } from './Req'
 import Res from './Res'
 
@@ -42,7 +43,7 @@ export default class Resreq {
     return dispatch(fetch)({
       ...this.options,
       ...options,
-      // onRequestProgress: options.onRequestProgress,
+      headers: mergeHeaders(this.options.headers || {}, options?.headers || {}),
       onResponseProgress: options.onResponseProgress,
       // [ON_GLOBAL_REQUEST_PROGRESS]: this.options.onRequestProgress,
       [ON_GLOBAL_RESPONSE_PROGRESS]: this.options.onResponseProgress

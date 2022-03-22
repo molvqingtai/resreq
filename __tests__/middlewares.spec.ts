@@ -207,7 +207,7 @@ describe('Test overload options', () => {
       })
     ).headers.get('X-Custom-Header')
 
-    expect(value).toBe('custom')
+    expect(value).toBe('bar')
 
     server.close()
   })

@@ -319,4 +319,31 @@ describe('Test request methods', () => {
 
     server.close()
   })
+
+  test('Merge headers', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({
+      baseUrl,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    server.get('/api', (ctx) => {
+      ctx.status = 200
+    })
+
+    const res: any = await await resreq.get('/api', {
+      headers: {
+        'Content-Type': 'text/plain',
+        'X-Custom-Header': 'foo/bar'
+      }
+    })
+
+    expect(res.headers.get('Content-Type')).toBe('text/plain')
+    expect(res.headers.get('X-Custom-Header')).toBe('foo/bar')
+
+    server.close()
+  })
 })
