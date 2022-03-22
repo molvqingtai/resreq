@@ -1,4 +1,4 @@
-![logo](https://github.com/molvqingtai/resreq/blob/develop/logo.svg | width=300)
+![logo](./logo.svg)
 
 
 
