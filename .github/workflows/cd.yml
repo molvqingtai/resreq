@@ -18,7 +18,7 @@ jobs:
       - uses: pnpm/action-setup@v2.1.0
         with:
           version: latest
-      - run: pnpm install
+      - run: pnpm install --ignore-scripts
       - run: pnpm run lint
   tests:
     needs: linter
@@ -31,7 +31,7 @@ jobs:
       - uses: pnpm/action-setup@v2.1.0
         with:
           version: latest
-      - run: pnpm install
+      - run: pnpm install --ignore-scripts
       - run: pnpm run test
   release:
     needs: tests
