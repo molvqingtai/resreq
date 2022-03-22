@@ -20,7 +20,7 @@ It is a modern http client, based on fetch, because it is implemented internally
 Resreq targets modern browsers and [Deno](https://github.com/denoland/deno)
 
 ```shell
-npm install resreq
+pnpm install resreq
 ```
 
 
@@ -331,6 +331,19 @@ The middleware must call next(req) to return a promise
 ```typescript
 type Middleware = (next: Next) => (req: Req) => Promise<Res>
 ```
+
+
+
+
+
+### Standing on the shoulders of giants
+
+Some of the inspiration for this project came from their.
+
+* [Axios](https://github.com/axios/axios): Promise based HTTP client for the browser and node.js
+* [Ky](https://github.com/sindresorhus/ky): Tiny & elegant JavaScript HTTP client based on the browser Fetch API
+* [Redux](https://github.com/reduxjs/redux): Predictable state container for JavaScript apps
+
 
 
 
