@@ -26,7 +26,7 @@ npm install resreq
 
 
 
-If you use it in [node](https://nodejs.org/en/), you need to add some polyfill
+If you use it in [Node](https://nodejs.org/en/), you need to add some polyfill
 
 ```typescript
 import fetch, { Headers, Request, Response } from 'node-fetch'
