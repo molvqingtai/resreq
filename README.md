@@ -3,10 +3,9 @@
 </p>
 
 
-
 # Resreq
 
-> Fetch-based onion model http client.
+[![version](https://img.shields.io/github/v/release/molvqingtai/resreq)](https://www.npmjs.com/package/resreq) [![deno land](http://img.shields.io/badge/available%20on-deno.land/x-lightgrey.svg?logo=deno&labelColor=black&color=blue)](https://deno.land/x/event_hub) [![workflow](https://github.com/molvqingtai/resreq/actions/workflows/ci.yml/badge.svg)](https://github.com/molvqingtai/resreq/actions) [![download](https://img.shields.io/npm/dt/resreq)](https://www.npmjs.com/package/resreq) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 
 
