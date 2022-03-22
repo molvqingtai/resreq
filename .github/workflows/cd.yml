@@ -15,8 +15,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: lts/*
-      - run: npm ci
-      - run: npm run lint
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: latest
+      - run: pnpm install
+      - run: pnpm run lint
   tests:
     needs: linter
     runs-on: ubuntu-latest
@@ -25,8 +28,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: lts/*
-      - run: npm ci
-      - run: npm run test
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: latest
+      - run: pnpm install
+      - run: pnpm run test
   release:
     needs: tests
     runs-on: ubuntu-latest
@@ -35,10 +41,12 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: lts/*
-      # https://github.com/semantic-release/git/issues/209
-      - run: npm ci --ignore-scripts
-      - run: npm run build
-      - run: npx semantic-release
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: latest
+      - run: pnpm install
+      - run: pnpm run build
+      - run: pnpx semantic-release
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

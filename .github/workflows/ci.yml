@@ -15,8 +15,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: lts/*
-      - run: npm ci
-      - run: npm run lint
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: latest
+      - run: pnpm install
+      - run: pnpm run lint
   tests:
     needs: linter
     runs-on: ubuntu-latest
@@ -25,5 +28,8 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: lts/*
-      - run: npm ci
-      - run: npm run test
+      - uses: pnpm/action-setup@v2.1.0
+        with:
+          version: latest
+      - run: pnpm install
+      - run: pnpm run test
