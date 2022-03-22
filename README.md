@@ -274,6 +274,7 @@ interface Options extends Omit<RequestInit, 'body'> {
 * **params**: The params of a `resreq.get` request are automatically added to the url via the [new URLSearchParams](https://developer.mozilla.org/zh-CN/docs/Web/API/URLSearchParams) method
 * **body**: Based on [BodyInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request), and adding `Record<string, any>`, which means you can pass `object` directly, instead of `JSON.stringify(object)`, which will automatically add `Content-Type: application/json` request headers
 * **meta**: The extra information that needs to be carried in the request is not really sent to the server, but it can be obtained in the `res.meta`
+* **timeout**: Specify the number of milliseconds of time before the request, if the time is exceeded the request will be aborted, the default value is 1000ms
 * **throwHttpError**: If true, a status code outside of 200-299 will throw an error, the default value is false
 * **onResponseProgress**: The download progress hook, which depends on the [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream), does not currently work in node
 

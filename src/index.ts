@@ -22,7 +22,7 @@ export default class Resreq {
     this.options = {
       ...options,
       baseUrl: options.baseUrl || '',
-      timeout: options.timeout || 10000,
+      timeout: options.timeout || 1000,
       throwHttpError: options.throwHttpError || false
     }
   }
