@@ -13,7 +13,7 @@
 
 It is a modern http client, based on fetch, because it is implemented internally using the onion model, so you can use middleware to intercept requests and responses elegantly.
 
-![Imgur](https://imgur.com/LZCpzbi)
+
 
 ## Install
 
