@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/molvqingtai/resreq/compare/v1.0.0...v1.0.1) (2022-03-22)
+
+
+### Performance Improvements
+
+* add a thanks to the readme ([457cad1](https://github.com/molvqingtai/resreq/commit/457cad1b02d83cecde519524fe743d3f4d0caff7))
+
 # 1.0.0 (2022-03-22)
 
 
