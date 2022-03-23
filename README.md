@@ -13,7 +13,7 @@
 
 It is a modern http client, based on fetch, because it is implemented internally using the onion model, so you can use middleware to intercept requests and responses elegantly.
 
-
+![Imgur](https://imgur.com/LZCpzbi)
 
 ## Install
 
@@ -343,6 +343,7 @@ Some of the inspiration for this project came from their.
 * [Axios](https://github.com/axios/axios): Promise based HTTP client for the browser and node.js
 * [Ky](https://github.com/sindresorhus/ky): Tiny & elegant JavaScript HTTP client based on the browser Fetch API
 * [Redux](https://github.com/reduxjs/redux): Predictable state container for JavaScript apps
+* [Koa](https://github.com/koajs/koa): Next generation web framework for node.js
 
 
 
