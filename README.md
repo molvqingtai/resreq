@@ -6,6 +6,7 @@
 # Resreq
 
 [![version](https://img.shields.io/github/v/release/molvqingtai/resreq)](https://www.npmjs.com/package/resreq) [![deno land](http://img.shields.io/badge/available%20on-deno.land/x-lightgrey.svg?logo=deno&labelColor=black&color=blue)](https://deno.land/x/resreq) [![workflow](https://github.com/molvqingtai/resreq/actions/workflows/ci.yml/badge.svg)](https://github.com/molvqingtai/resreq/actions) [![download](https://img.shields.io/npm/dt/resreq)](https://www.npmjs.com/package/resreq) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmolvqingtai%2Fresreq.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmolvqingtai%2Fresreq?ref=badge_shield)
 
 
 
@@ -354,3 +355,6 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 
 
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmolvqingtai%2Fresreq.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmolvqingtai%2Fresreq?ref=badge_large)
