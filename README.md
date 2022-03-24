@@ -11,7 +11,7 @@
 
 ## What is resreq?
 
-It is a modern http client, based on fetch, because it is implemented internally using the onion model, so you can use middleware to intercept requests and responses elegantly.
+It is a modern http client, based on [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch), because it is implemented internally using the onion model, so you can use middleware to intercept requests and responses elegantly.
 
 
 
@@ -21,6 +21,12 @@ Resreq targets modern browsers and [Deno](https://github.com/denoland/deno)
 
 ```shell
 pnpm install resreq
+```
+
+**or**
+
+```typescript
+import Resreq from 'https://deno.land/x/resreq/src/index.ts'
 ```
 
 
@@ -87,14 +93,15 @@ console.log(res.json())
 
 // Cancel request
 const abortController = new AbortController()
+
 const res = await resreq.get({
-  url: '/api',
+  url: 'https://example.com/api',
   signal: abortController.signal
 }).catch(error){
-  console.log(error) // request abort
+  console.log(error) // Abort error
 }
 
-abortController.abort()
+abortController.abort() // request abort
 console.log(res.json())
 ```
 
@@ -224,7 +231,9 @@ console.log(res.headers.get('X-Custom-Header')) // bar
 
 
 
-**Req(req:Req, init?:ReqInit) & Res(res:Res, init?:ResInit)**
+**Req(req:Req, init?:ReqInit)**
+
+**Res(res:Res, init?:ResInit)**
 
 In the middleware, use `new Req()` and `new Res()` to rewrite the request and response
 
@@ -243,7 +252,7 @@ const middleware: Middleware = (next) => async (req) => {
 }
 ```
 
-Note: Req & Res inherits from [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response); to create a new request and response in the middleware, use Req & Res
+Note: Req & Res extends from [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response); to create a new request and response in the middleware, use Req & Res
 
 
 
@@ -270,7 +279,7 @@ interface Options extends Omit<RequestInit, 'body'> {
 * **baseUrl**: The url prefix of the request will be concatenated with the url in `resreq[method]()` to form a complete request address, the default value is ' '
 * **url**: Request url, the default value is ' '
 * **method**：Request method, the default value is 'GET'
-* **params**: The params of a `resreq.get` request are automatically added to the url via the [new URLSearchParams](https://developer.mozilla.org/zh-CN/docs/Web/API/URLSearchParams) method
+* **params**: The params of a `resreq.get` request are automatically added to the url via the [new URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) method
 * **body**: Based on [BodyInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request), and adding `Record<string, any>`, which means you can pass `object` directly, instead of `JSON.stringify(object)`, which will automatically add `Content-Type: application/json` request headers
 * **meta**: The extra information that needs to be carried in the request is not really sent to the server, but it can be obtained in the `res.meta`
 * **timeout**: Specify the number of milliseconds of time before the request, if the time is exceeded the request will be aborted, the default value is 1000ms
@@ -305,7 +314,7 @@ interface ReqInit extends Omit<RequestInit, 'body'> {
 }
 ```
 
-Note that its 'headers' behave differently than 'Options.headers', which overrides the global headers
+Note: that its 'headers' behave differently than 'Options.headers', which overrides the global headers
 
 
 
