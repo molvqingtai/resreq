@@ -13,6 +13,8 @@
 
 It is a modern http client, based on [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch), because it is implemented internally using the onion model, so you can use middleware to intercept requests and responses elegantly.
 
+[Learn more](https://dev.to/molvqingtai/applying-koas-onion-model-to-front-end-requests-356p)
+
 
 
 ## Install
