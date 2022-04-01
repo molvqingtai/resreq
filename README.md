@@ -2,20 +2,15 @@
   <img src="./logo.svg" width="300px"/>
 </p>
 
-
 # Resreq
 
 [![version](https://img.shields.io/github/v/release/molvqingtai/resreq)](https://www.npmjs.com/package/resreq) [![deno land](http://img.shields.io/badge/available%20on-deno.land/x-lightgrey.svg?logo=deno&labelColor=black&color=blue)](https://deno.land/x/resreq) [![workflow](https://github.com/molvqingtai/resreq/actions/workflows/ci.yml/badge.svg)](https://github.com/molvqingtai/resreq/actions) [![download](https://img.shields.io/npm/dt/resreq)](https://www.npmjs.com/package/resreq) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-
-
 
 ## What is resreq?
 
 It is a modern http client, based on [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch), because it is implemented internally using the onion model, so you can use middleware to intercept requests and responses elegantly.
 
 [Learn more](https://dev.to/molvqingtai/applying-koas-onion-model-to-front-end-requests-356p)
-
-
 
 ## Install
 
@@ -31,8 +26,6 @@ pnpm install resreq
 import Resreq from 'https://deno.land/x/resreq/src/index.ts'
 ```
 
-
-
 If you use it in [Node](https://nodejs.org/en/), you need to add some polyfill
 
 ```typescript
@@ -46,13 +39,7 @@ globalThis.Response = Response
 globalThis.AbortController = AbortController
 ```
 
-
-
-
-
 ## Documentation
-
-
 
 ### Get Started
 
@@ -71,8 +58,6 @@ const res = await resreq.request({
 
 console.log(res.json())
 ```
-
-
 
 **Use Methods**
 
@@ -107,8 +92,6 @@ abortController.abort() // request abort
 console.log(res.json())
 ```
 
-
-
 **Use Middlewares**
 
 ```typescript
@@ -136,8 +119,6 @@ const res = await resreq.get('/api', {
 console.log(res.json())
 ```
 
-
-
 ### API
 
 **new Resreq(options?:Options)**
@@ -154,8 +135,6 @@ const resreq = new Resreq({
   }
 })
 ```
-
-
 
 **resreq.request(options?:Options)**
 
@@ -179,8 +158,6 @@ const res = await resreq.request({
 console.log(res.json())
 ```
 
-
-
 **resreq\[method\](options?:Options)**
 
 Use ''method'' to send the request and configure the options
@@ -200,8 +177,6 @@ const res = await resreq.get('/api',{
 
 console.log(res.json())
 ```
-
-
 
 **resreq.use(middleware:Middleware)**
 
@@ -231,8 +206,6 @@ const res = await resreq.get('/api', {
 console.log(res.headers.get('X-Custom-Header')) // bar
 ```
 
-
-
 **Req(req:Req, init?:ReqInit)**
 
 **Res(res:Res, init?:ResInit)**
@@ -256,8 +229,6 @@ const middleware: Middleware = (next) => async (req) => {
 
 Note: Req & Res extends from [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response); to create a new request and response in the middleware, use Req & Res
 
-
-
 ### Interfaces
 
 **Options**
@@ -278,27 +249,23 @@ interface Options extends Omit<RequestInit, 'body'> {
 }
 ```
 
-* **baseUrl**: The url prefix of the request will be concatenated with the url in `resreq[method]()` to form a complete request address, the default value is ' '
-* **url**: Request url, the default value is ' '
-* **method**：Request method, the default value is 'GET'
-* **params**: The params of a `resreq.get` request are automatically added to the url via the [new URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) method
-* **body**: Based on [BodyInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request), and adding `Record<string, any>`, which means you can pass `object` directly, instead of `JSON.stringify(object)`, which will automatically add `Content-Type: application/json` request headers
-* **meta**: The extra information that needs to be carried in the request is not really sent to the server, but it can be obtained in the `res.meta`
-* **timeout**: Specify the number of milliseconds of time before the request, if the time is exceeded the request will be aborted, the default value is 1000ms
-* **throwHttpError**: If true, a status code outside of 200-299 will throw an error, the default value is false
-* **onResponseProgress**: The download progress hook, which depends on the [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream), does not currently work in node
-
-
+- **baseUrl**: The url prefix of the request will be concatenated with the url in `resreq[method]()` to form a complete request address, the default value is ' '
+- **url**: Request url, the default value is ' '
+- **method**：Request method, the default value is 'GET'
+- **params**: The params of a `resreq.get` request are automatically added to the url via the [new URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) method
+- **body**: Based on [BodyInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request), and adding `Record<string, any>`, which means you can pass `object` directly, instead of `JSON.stringify(object)`, which will automatically add `Content-Type: application/json` request headers
+- **meta**: The extra information that needs to be carried in the request is not really sent to the server, but it can be obtained in the `res.meta`
+- **timeout**: Specify the number of milliseconds of time before the request, if the time is exceeded the request will be aborted, the default value is 1000ms
+- **throwHttpError**: If true, a status code outside of 200-299 will throw an error, the default value is false
+- **onResponseProgress**: The download progress hook, which depends on the [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream), does not currently work in node
 
 To avoid adding complexity, `new Resreq(options)` and `resreq[method](options)`, in which 'options' are of the same type
 
 The options defined in `new Resreq(options)` will take effect globally, `resreq[method](options)`, will override the "global options", except for the following options which will not be overridden
 
-* **headers**: The headers defined in the method are merged into the global headers
+- **headers**: The headers defined in the method are merged into the global headers
 
-* **onResponseProgress**: Defining onResponseProgress in a method and the global onResponseProgress are both retained.
-
-  
+- **onResponseProgress**: Defining onResponseProgress in a method and the global onResponseProgress are both retained.
 
 **ReqInit**
 
@@ -318,8 +285,6 @@ interface ReqInit extends Omit<RequestInit, 'body'> {
 
 Note: that its 'headers' behave differently than 'Options.headers', which overrides the global headers
 
-
-
 **ResInit**
 
 ResInit extends from the [ResponseInit](https://developer.mozilla.org/en-US/docs/Web/API/Response/Response) type with some additional properties
@@ -333,8 +298,6 @@ interface ResInit extends ResponseInit {
 }
 ```
 
-
-
 **Middleware**
 
 The middleware must call next(req) to return a promise
@@ -343,25 +306,15 @@ The middleware must call next(req) to return a promise
 type Middleware = (next: Next) => (req: Req) => Promise<Res>
 ```
 
-
-
-
-
 ### Standing on the shoulders of giants
 
 Some of the inspiration for this project came from their.
 
-* [Axios](https://github.com/axios/axios): Promise based HTTP client for the browser and node.js
-* [Ky](https://github.com/sindresorhus/ky): Tiny & elegant JavaScript HTTP client based on the browser Fetch API
-* [Redux](https://github.com/reduxjs/redux): Predictable state container for JavaScript apps
-* [Koa](https://github.com/koajs/koa): Next generation web framework for node.js
-
-
-
+- [Axios](https://github.com/axios/axios): Promise based HTTP client for the browser and node.js
+- [Ky](https://github.com/sindresorhus/ky): Tiny & elegant JavaScript HTTP client based on the browser Fetch API
+- [Redux](https://github.com/reduxjs/redux): Predictable state container for JavaScript apps
+- [Koa](https://github.com/koajs/koa): Next generation web framework for node.js
 
 ### License
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details
-
-
-
