@@ -46,7 +46,7 @@
   },
   "homepage": "https://github.com/molvqingtai/resreq#readme",
   "devDependencies": {
-    "@commitlint/cli": "^13.2.1",
+    "@commitlint/cli": "^17.0.0",
     "@commitlint/config-conventional": "^13.2.0",
     "@koa/cors": "^3.2.0",
     "@koa/router": "^10.1.1",
