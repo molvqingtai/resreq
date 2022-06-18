@@ -67,7 +67,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-promise": "^5.2.0",
+    "eslint-plugin-promise": "^6.0.0",
     "formdata-node": "^4.3.3",
     "husky": "^7.0.4",
     "koa": "^2.13.4",
