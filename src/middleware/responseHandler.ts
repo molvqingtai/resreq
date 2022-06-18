@@ -35,7 +35,7 @@ const createReadableStream = (response: Response, onResponseProgress: ProgressCa
         const { done, value } = await reader.read()
         if (done) return controller.close()
 
-        carry += value!.byteLength
+        carry += value.byteLength
 
         onResponseProgress(
           {
@@ -43,7 +43,7 @@ const createReadableStream = (response: Response, onResponseProgress: ProgressCa
             carry,
             total
           },
-          value!
+          value
         )
         controller.enqueue(value)
         await read()
