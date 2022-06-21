@@ -1,4 +1,5 @@
 import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS } from './constants'
+import { ProgressCallback } from './index'
 
 export interface ResInit extends ResponseInit {
   meta?: Record<string, any>
