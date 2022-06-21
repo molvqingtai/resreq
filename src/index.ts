@@ -10,6 +10,14 @@ import Res from './Res'
 export type Next = (req: Req) => Promise<Res>
 export type Middleware = (next: Next) => (req: Req) => Promise<Res>
 
+export interface Progress {
+  ratio: number // Current Transfer Ratio
+  carry: number // Current Transfer Byte Size
+  total: number // Total size of transmitted bytes
+}
+
+export type ProgressCallback = (progress: Progress, chunk: Uint8Array) => void
+
 export interface Options extends ReqInit {
   baseUrl?: string
   params?: Record<string, any>

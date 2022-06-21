@@ -1,5 +1,6 @@
 import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS, ABORT_CONTROLLER } from './constants'
 import isJsonBody from './helpers/isJsonBody'
+import { ProgressCallback } from './index'
 
 export interface ReqInit extends Omit<RequestInit, 'body'> {
   url?: string

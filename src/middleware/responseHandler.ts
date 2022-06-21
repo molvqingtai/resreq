@@ -1,4 +1,4 @@
-import { Middleware } from '../index'
+import { Middleware, ProgressCallback } from '../index'
 import Res from '../Res'
 import { ON_GLOBAL_RESPONSE_PROGRESS } from '../constants'
 
