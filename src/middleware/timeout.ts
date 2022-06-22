@@ -1,5 +1,5 @@
+import { Middleware } from '../types'
 import { ABORT_CONTROLLER } from '../constants'
-import { Middleware } from '../index'
 
 /**
  * Network timeout

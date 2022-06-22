@@ -1,4 +1,4 @@
-import { Middleware, Options } from '../index'
+import { Middleware, Options } from '../types'
 import cleanUrl from '../helpers/cleanUrl'
 import Req from '../Req'
 

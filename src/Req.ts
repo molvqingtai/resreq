@@ -1,19 +1,6 @@
+import { ReqInit, ProgressCallback } from './types'
 import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS, ABORT_CONTROLLER } from './constants'
 import isJsonBody from './helpers/isJsonBody'
-import { ProgressCallback } from './index'
-
-export interface ReqInit extends Omit<RequestInit, 'body'> {
-  url?: string
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'PATCH'
-  meta?: Record<string, any>
-  timeout?: number
-  throwHttpError?: boolean
-  body?: BodyInit | Record<string, any>
-  // onRequestProgress?: ProgressCallback
-  onResponseProgress?: ProgressCallback
-  [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback
-  [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
-}
 
 export default class Req extends Request {
   readonly meta?: Record<string, any>
