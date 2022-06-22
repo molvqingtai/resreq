@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/molvqingtai/resreq/compare/v1.0.1...v1.0.2) (2022-06-21)
+
+
+### Bug Fixes
+
+* output file contains the ProgressCallback type ([37383dc](https://github.com/molvqingtai/resreq/commit/37383dc170bd09573e6848ebad658e5af0d23c3c))
+
 ## [1.0.1](https://github.com/molvqingtai/resreq/compare/v1.0.0...v1.0.1) (2022-03-22)
 
 
