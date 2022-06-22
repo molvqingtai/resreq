@@ -1,27 +1,11 @@
+import { Options, Middleware } from './types'
 import { ON_GLOBAL_RESPONSE_PROGRESS } from './constants'
 import compose from './helpers/compose'
 import requestHandler from './middleware/requestHandler'
 import responseHandler from './middleware/responseHandler'
 import timeout from './middleware/timeout'
 import mergeHeaders from './helpers/mergeHeaders'
-import Req, { ReqInit } from './Req'
 import Res from './Res'
-
-export type Next = (req: Req) => Promise<Res>
-export type Middleware = (next: Next) => (req: Req) => Promise<Res>
-
-export interface Progress {
-  ratio: number // Current Transfer Ratio
-  carry: number // Current Transfer Byte Size
-  total: number // Total size of transmitted bytes
-}
-
-export type ProgressCallback = (progress: Progress, chunk: Uint8Array) => void
-
-export interface Options extends ReqInit {
-  baseUrl?: string
-  params?: Record<string, any>
-}
 
 export default class Resreq {
   options: Options
@@ -83,5 +67,6 @@ export default class Resreq {
   }
 }
 
-export { default as Req, ReqInit } from './Req'
-export { default as Res, ResInit } from './Res'
+export * from './types'
+export { default as Req } from './Req'
+export { default as Res } from './Res'

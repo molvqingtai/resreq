@@ -1,6 +1,6 @@
-import { Middleware, ProgressCallback } from '../index'
-import Res from '../Res'
+import { Middleware, ProgressCallback } from '../types'
 import { ON_GLOBAL_RESPONSE_PROGRESS } from '../constants'
+import Res from '../Res'
 
 const createReadableStream = (response: Response, onResponseProgress: ProgressCallback) =>
   new ReadableStream({
