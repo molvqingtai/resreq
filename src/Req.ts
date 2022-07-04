@@ -55,7 +55,7 @@ export default class Req extends Request {
      */
     super(new Request(init?.url ?? request.url), {
       method: init?.method ?? request.method,
-      headers: headers,
+      headers,
       body: body ?? request.body,
       mode: init?.mode ?? request.mode,
       /**
