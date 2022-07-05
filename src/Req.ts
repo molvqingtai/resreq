@@ -1,5 +1,5 @@
 import { ReqInit, ProgressCallback } from './types'
-import { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS, ABORT_CONTROLLER } from './constants'
+import { ON_GLOBAL_RESPONSE_PROGRESS, ABORT_CONTROLLER } from './constants'
 import isJsonBody from './helpers/isJsonBody'
 
 export default class Req extends Request {
@@ -7,9 +7,7 @@ export default class Req extends Request {
   readonly timeout: number
   readonly throwHttpError: boolean;
   readonly [ABORT_CONTROLLER]: AbortController
-  readonly onRequestProgress?: ProgressCallback
   readonly onResponseProgress?: ProgressCallback;
-  readonly [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback;
   readonly [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
   constructor(request: Req, init?: ReqInit) {
     /**
@@ -55,7 +53,7 @@ export default class Req extends Request {
      */
     super(new Request(init?.url ?? request.url), {
       method: init?.method ?? request.method,
-      headers: headers,
+      headers,
       body: body ?? request.body,
       mode: init?.mode ?? request.mode,
       /**
@@ -71,13 +69,10 @@ export default class Req extends Request {
       keepalive: init?.keepalive ?? request.keepalive,
       signal: abortController.signal
     })
-
     this.meta = init?.meta ?? request.meta
     this.timeout = init?.timeout ?? request?.timeout
     this.throwHttpError = init?.throwHttpError ?? request.throwHttpError
-    // this.onRequestProgress = init?.onRequestProgress ?? request.onRequestProgress
     this.onResponseProgress = init?.onResponseProgress ?? request.onResponseProgress
-    this[ON_GLOBAL_REQUEST_PROGRESS] = init?.[ON_GLOBAL_REQUEST_PROGRESS] ?? request[ON_GLOBAL_REQUEST_PROGRESS]
     this[ON_GLOBAL_RESPONSE_PROGRESS] = init?.[ON_GLOBAL_RESPONSE_PROGRESS] ?? request[ON_GLOBAL_RESPONSE_PROGRESS]
     this[ABORT_CONTROLLER] = abortController
     signal.addEventListener('abort', () => abortController.abort())

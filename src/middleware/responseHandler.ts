@@ -54,14 +54,14 @@ const createReadableStream = (response: Response, onResponseProgress: ProgressCa
 
 const responseHandler: Middleware = (next) => async (req) => {
   // Here is the native Response
-  const response = await next(req)
+  const response: Response = await next(req)
 
   if (req.throwHttpError && !response.ok) {
     throw new Error(`${response.status} ${response.statusText}`)
   }
 
   createReadableStream(response.clone(), (...args) => {
-    response.onResponseProgress?.(...args)
+    req.onResponseProgress?.(...args)
     req[ON_GLOBAL_RESPONSE_PROGRESS]?.(...args)
   })
 
@@ -79,7 +79,7 @@ const responseHandler: Middleware = (next) => async (req) => {
   //   void readableStream.cancel()
   // })
 
-  return new Res(response, req)
+  return new Res(response as Res, req)
 }
 
 export default responseHandler

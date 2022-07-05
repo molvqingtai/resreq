@@ -20,6 +20,7 @@ jobs:
           version: latest
       - run: pnpm install --ignore-scripts
       - run: pnpm run lint
+      - run: pnpm run tsc
   tests:
     needs: linter
     runs-on: ubuntu-latest

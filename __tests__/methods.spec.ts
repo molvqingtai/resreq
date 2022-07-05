@@ -1,6 +1,7 @@
 import { test, describe, expect } from 'vitest'
 import Server from './helpers/Server'
 import Resreq from '../src'
+import sleep from './helpers/sleep'
 
 interface ApiResponse {
   code: number
@@ -103,7 +104,7 @@ describe('Test request methods', () => {
     const formData = new FormData()
     formData.append('message', 'ok')
 
-    const res: any = await (
+    const res: ApiResponse = await (
       await resreq.post('/api', {
         body: formData
       })
@@ -129,7 +130,7 @@ describe('Test request methods', () => {
       }
     })
 
-    const res: any = await (
+    const res: ApiResponse = await (
       await resreq.post('/api', {
         body: {
           message: 'ok'
@@ -155,7 +156,7 @@ describe('Test request methods', () => {
       }
     })
 
-    const res: any = await (
+    const res: ApiResponse = await (
       await resreq.post('/api', {
         body: 'ok'
       })
@@ -179,7 +180,7 @@ describe('Test request methods', () => {
       }
     })
 
-    const res: any = await (
+    const res: ApiResponse = await (
       await resreq.post('/api', {
         body: new URLSearchParams('message=ok')
       })
@@ -203,7 +204,7 @@ describe('Test request methods', () => {
       }
     })
 
-    const res: any = await (
+    const res: ApiResponse = await (
       await resreq.post('/api', {
         body: new Blob([JSON.stringify({ message: 'ok' })], { type: 'application/json' })
       })
@@ -227,7 +228,7 @@ describe('Test request methods', () => {
       }
     })
 
-    const res: any = await (
+    const res: ApiResponse = await (
       await resreq.post('/api', {
         body: new Uint8Array([111, 107]),
         headers: {
@@ -257,7 +258,7 @@ describe('Test request methods', () => {
     const formData = new FormData()
     formData.append('message', 'ok')
 
-    const res: any = await (
+    const res: ApiResponse = await (
       await resreq.put('/api', {
         body: formData
       })
@@ -283,7 +284,7 @@ describe('Test request methods', () => {
       }
     })
 
-    const res: any = await (
+    const res: ApiResponse = await (
       await resreq.put('/api', {
         body: {
           message: 'ok'
@@ -311,7 +312,7 @@ describe('Test request methods', () => {
       }
     })
 
-    const res: any = await (await resreq.delete('/api?message=ok')).json()
+    const res: ApiResponse = await (await resreq.delete('/api?message=ok')).json()
 
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
@@ -334,7 +335,7 @@ describe('Test request methods', () => {
       ctx.status = 200
     })
 
-    const res: any = await await resreq.get('/api', {
+    const res = await resreq.get('/api', {
       headers: {
         'Content-Type': 'text/plain',
         'X-Custom-Header': 'foo/bar'
@@ -345,5 +346,67 @@ describe('Test request methods', () => {
     expect(res.headers.get('X-Custom-Header')).toBe('foo/bar')
 
     server.close()
+  })
+
+  test('Use global onResponseProgress hook', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const progressInfo: any[][] = []
+    server.get('/api', async (ctx) => {
+      ctx.res.writeHead(200, { 'content-length': 6 })
+      ctx.res.write('foo')
+      await sleep(1000)
+      ctx.res.end('bar')
+    })
+    const resreq = new Resreq({
+      baseUrl,
+      onResponseProgress(progress, chunk) {
+        progressInfo.push([progress, new TextDecoder().decode(chunk)])
+      }
+    })
+
+    const res = await (await resreq.request({ url: '/api' })).text()
+
+    expect(progressInfo).toEqual([
+      [{ ratio: 0, carry: 0, total: 0 }, ''],
+      [{ ratio: 50, carry: 3, total: 6 }, 'foo'],
+      [{ ratio: 100, carry: 6, total: 6 }, 'bar']
+    ])
+    expect(res).toBe('foobar')
+
+    await server.close()
+  })
+
+  test('Use local onResponseProgress hook', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const progressInfo: any[][] = []
+    server.get('/api', async (ctx) => {
+      ctx.res.writeHead(200, { 'content-length': 6 })
+      ctx.res.write('foo')
+      await sleep(1000)
+      ctx.res.end('bar')
+    })
+    const resreq = new Resreq({
+      baseUrl
+    })
+
+    const res = await (
+      await resreq.request({
+        url: '/api',
+        onResponseProgress(progress, chunk) {
+          progressInfo.push([progress, new TextDecoder().decode(chunk)])
+        }
+      })
+    ).text()
+
+    expect(progressInfo).toEqual([
+      [{ ratio: 0, carry: 0, total: 0 }, ''],
+      [{ ratio: 50, carry: 3, total: 6 }, 'foo'],
+      [{ ratio: 100, carry: 6, total: 6 }, 'bar']
+    ])
+    expect(res).toBe('foobar')
+
+    await server.close()
   })
 })

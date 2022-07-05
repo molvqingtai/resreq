@@ -1,14 +1,13 @@
-import type { ON_GLOBAL_REQUEST_PROGRESS, ON_GLOBAL_RESPONSE_PROGRESS } from '../constants'
+import type { ON_GLOBAL_RESPONSE_PROGRESS, ABORT_CONTROLLER } from '../constants'
 import type Req from '../Req'
 import type Res from '../Res'
 
 export interface ResInit extends ResponseInit {
   meta?: Record<string, any>
-  timeout?: number
-  throwHttpError?: boolean
-  onRequestProgress?: ProgressCallback
+  timeout: number
+  throwHttpError: boolean
+  [ABORT_CONTROLLER]: AbortController
   onResponseProgress?: ProgressCallback
-  [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback
   [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
 }
 
@@ -19,9 +18,7 @@ export interface ReqInit extends Omit<RequestInit, 'body'> {
   timeout?: number
   throwHttpError?: boolean
   body?: BodyInit | Record<string, any>
-  // onRequestProgress?: ProgressCallback
   onResponseProgress?: ProgressCallback
-  [ON_GLOBAL_REQUEST_PROGRESS]?: ProgressCallback
   [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
 }
 
