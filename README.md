@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./logo.svg" width="300px"/>
+  <img src="https://github.com/molvqingtai/resreq/blob/master/logo.svg" width="300px"/>
 </p>
 
 # Resreq
@@ -226,8 +226,8 @@ const middleware: Middleware = (next) => async (req) => {
   })
 }
 ```
-
-Note: Req & Res extends from [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response); to create a new request and response in the middleware, use Req & Res
+> **Warning**
+> Req & Res extends from [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response); to create a new request and response in the middleware, use Req & Res
 
 ### Interfaces
 
@@ -282,8 +282,8 @@ interface ReqInit extends Omit<RequestInit, 'body'> {
   onResponseProgress?: ProgressCallback
 }
 ```
-
-Note: that its 'headers' behave differently than 'Options.headers', which overrides the global headers
+> **Note**
+> That its 'headers' behave differently than 'Options.headers', which overrides the global headers
 
 **ResInit**
 
@@ -317,4 +317,4 @@ Some of the inspiration for this project came from their.
 
 ### License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/molvqingtai/resreq/blob/master/LICENSE) file for details

@@ -37,7 +37,6 @@ export default class Resreq {
       ...options,
       headers: mergeHeaders(this.options.headers || {}, options?.headers || {}),
       onResponseProgress: options.onResponseProgress,
-      // [ON_GLOBAL_REQUEST_PROGRESS]: this.options.onRequestProgress,
       [ON_GLOBAL_RESPONSE_PROGRESS]: this.options.onResponseProgress
     })
   }
