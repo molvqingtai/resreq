@@ -32,8 +32,7 @@ describe('Test errors', () => {
     const server = new Server()
     const { origin: baseUrl } = await server.listen()
     const resreq = new Resreq({ baseUrl })
-
-    await expect(resreq.get('/', { baseUrl: 'https://localhost' })).rejects.toThrowError(/connect/)
+    await expect(resreq.get('/', { baseUrl: 'https://localhost' })).rejects.toThrowError(/fetch failed/)
 
     server.close()
   })
@@ -76,7 +75,7 @@ describe('Test errors', () => {
     await expect(res).rejects.toThrowError(/abort/)
   })
 
-  test('Http error with timout', async () => {
+  test('Http error with timeout', async () => {
     const server = new Server()
     const { origin: baseUrl } = await server.listen()
     const resreq = new Resreq({ baseUrl, timeout: 300 })
@@ -89,6 +88,7 @@ describe('Test errors', () => {
     const res = resreq.request({
       url: '/api'
     })
+
     await expect(res).rejects.toThrowError(/timeout/)
   })
 })
