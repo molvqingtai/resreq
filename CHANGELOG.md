@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/molvqingtai/resreq/compare/v1.0.2...v1.0.3) (2022-07-05)
+
+
+### Bug Fixes
+
+* fix local onResponseProgress not working and clean up onRequestProgress ([2c7f08f](https://github.com/molvqingtai/resreq/commit/2c7f08f7a48e5308742d6eb61de3eb8105eb3d83))
+
 ## [1.0.2](https://github.com/molvqingtai/resreq/compare/v1.0.1...v1.0.2) (2022-06-21)
 
 
