@@ -81,15 +81,13 @@ console.log(res.json())
 // Cancel request
 const abortController = new AbortController()
 
-const res = await resreq.get({
-  url: 'https://example.com/api',
+await resreq.get('https://example.com/api', {
   signal: abortController.signal
-}).catch(error){
+}).catch(error => {
   console.log(error) // Abort error
-}
+})
 
 abortController.abort() // request abort
-console.log(res.json())
 ```
 
 **Use Middlewares**
