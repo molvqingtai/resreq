@@ -10,13 +10,13 @@ export default class Req extends Request {
   readonly onResponseProgress?: ProgressCallback;
   readonly [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
   constructor(request: Req, init?: ReqInit) {
+    let body = init?.body as BodyInit
+    const headers = new Headers(init?.headers ?? request.headers)
+
     /**
      * If he init.body is JSON, reset Header and Body
      * Reference: https://github.com/axios/axios/blob/master/lib/defaults/index.js#L71
      */
-    let body = init?.body as BodyInit
-    const headers = new Headers(init?.headers ?? request.headers)
-
     if (body && isJsonBody(body)) {
       headers.set('Content-Type', 'application/json')
       try {
