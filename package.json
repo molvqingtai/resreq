@@ -51,7 +51,7 @@
     "@commitlint/config-conventional": "^17.0.3",
     "@edge-runtime/vm": "1.1.0-beta.11",
     "@koa/cors": "^3.3.0",
-    "@koa/router": "^11.0.1",
+    "@koa/router": "^12.0.0",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/koa": "^2.13.4",
