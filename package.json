@@ -61,7 +61,7 @@
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
     "@vitest/ui": "^0.17.1",
-    "edge-runtime": "1.1.0-beta.11",
+    "edge-runtime": "1.1.0-beta.25",
     "eslint": "^8.19.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard": "^17.0.0",
