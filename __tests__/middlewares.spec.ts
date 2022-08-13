@@ -3,6 +3,12 @@ import Server from './helpers/Server'
 import Resreq, { Req } from '../src'
 import sleep from './helpers/sleep'
 
+interface ApiResponse {
+  code: number
+  message: string
+  data: any
+}
+
 describe('Test middleware', () => {
   test('Request success with middleware', async () => {
     const server = new Server()
@@ -200,7 +206,7 @@ describe('Test overload options', () => {
     })
 
     const value = (
-      await resreq.get('/api', {
+      await resreq.get<Response>('/api', {
         headers: {
           'X-Custom-Header': 'foo'
         }
@@ -215,7 +221,7 @@ describe('Test overload options', () => {
   test('Overload body', async () => {
     const server = new Server()
     const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl })
+    const resreq = new Resreq({ baseUrl, responseType: 'json' })
 
     server.post('/api', (ctx) => {
       ctx.body = {
@@ -233,13 +239,11 @@ describe('Test overload options', () => {
       return await next(_req)
     })
 
-    const res: any = await (
-      await resreq.post('/api', {
-        body: {
-          message: 'ok'
-        }
-      })
-    ).json()
+    const res: ApiResponse = await resreq.post('/api', {
+      body: {
+        message: 'ok'
+      }
+    })
 
     expect(res.data).toEqual({ message: 'no' })
 
@@ -283,5 +287,32 @@ describe('Test overload options', () => {
     })
 
     await expect(resreq.get('/api')).rejects.toThrowError(/timeout/)
+
+    server.close()
+  })
+
+  test('Overload responseType', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+
+    server.get('/api', async (ctx) => {
+      ctx.body = {
+        code: 200,
+        data: 'foobar'
+      }
+    })
+    resreq.use((next) => async (req) => {
+      const _req = new Req(req, {
+        timeout: 300,
+        responseType: 'text'
+      })
+      return await next(_req)
+    })
+
+    const res: ApiResponse = await resreq.get('/api')
+    expect(res.data).toBe('foobar')
+
+    server.close()
   })
 })

@@ -3,18 +3,19 @@ import { ON_GLOBAL_RESPONSE_PROGRESS } from './constants'
 import compose from './helpers/compose'
 import requestHandler from './middleware/requestHandler'
 import responseHandler from './middleware/responseHandler'
-import timeout from './middleware/timeout'
+import timeoutHandler from './middleware/timeoutHandler'
+import responseTypeHandler from './middleware/responseTypeHandler'
 import mergeHeaders from './helpers/mergeHeaders'
-import Res from './Res'
 
 export default class Resreq {
   options: Options
-  middleware: Middleware[] = [requestHandler, timeout, responseHandler]
+  middleware: Middleware[] = [responseTypeHandler, requestHandler, timeoutHandler, responseHandler]
   constructor(options: Options = {}) {
     this.options = {
       ...options,
       baseUrl: options.baseUrl || '',
       timeout: options.timeout || 1000,
+      responseType: options.responseType,
       throwHttpError: options.throwHttpError || false
     }
   }
@@ -25,12 +26,12 @@ export default class Resreq {
      * The response is first handled by the responseHandler，so it must be placed last
      */
     const responseHandler = this.middleware.pop()!
-    const timeout = this.middleware.pop()!
-    this.middleware = [...this.middleware, ...[middleware].flat(), timeout, responseHandler]
+    const timeoutHandler = this.middleware.pop()!
+    this.middleware = [...this.middleware, ...[middleware].flat(), timeoutHandler, responseHandler]
     return this
   }
 
-  async request(options: Options): Promise<Res> {
+  async request<T>(options: Options): Promise<T> {
     const dispatch = compose(...this.middleware)
     return dispatch(fetch)({
       ...this.options,
@@ -41,27 +42,27 @@ export default class Resreq {
     })
   }
 
-  async get(url: string, options?: Options) {
+  async get<T>(url: string, options?: Options): Promise<T> {
     return await this.request({ ...options, url, method: 'GET' })
   }
 
-  async post(url: string, options?: Options) {
+  async post<T>(url: string, options?: Options): Promise<T> {
     return await this.request({ ...options, url, method: 'POST' })
   }
 
-  async put(url: string, options?: Options) {
+  async put<T>(url: string, options?: Options): Promise<T> {
     return await this.request({ ...options, url, method: 'PUT' })
   }
 
-  async delete(url: string, options?: Options) {
+  async delete<T>(url: string, options?: Options): Promise<T> {
     return await this.request({ ...options, url, method: 'DELETE' })
   }
 
-  async patch(url: string, options?: Options) {
+  async patch<T>(url: string, options?: Options): Promise<T> {
     return await this.request({ ...options, url, method: 'PATCH' })
   }
 
-  async head(url: string, options?: Options) {
+  async head<T>(url: string, options?: Options): Promise<T> {
     return await this.request({ ...options, url, method: 'HEAD' })
   }
 }

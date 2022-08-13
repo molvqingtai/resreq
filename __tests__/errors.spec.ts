@@ -73,6 +73,8 @@ describe('Test errors', () => {
     })
     abortController.abort()
     await expect(res).rejects.toThrowError(/abort/)
+
+    server.close()
   })
 
   test('Http error with timeout', async () => {
@@ -90,5 +92,23 @@ describe('Test errors', () => {
     })
 
     await expect(res).rejects.toThrowError(/timeout/)
+    server.close()
+  })
+
+  test('Http error with responseType', async () => {
+    const server = new Server()
+    const { origin: baseUrl } = await server.listen()
+    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+
+    server.get('/api', async (ctx) => {
+      ctx.body = 'foobar'
+    })
+
+    const res = resreq.request({
+      url: '/api'
+    })
+    await expect(res).rejects.toThrowError(/JSON/)
+
+    server.close()
   })
 })

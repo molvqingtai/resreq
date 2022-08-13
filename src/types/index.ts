@@ -5,6 +5,7 @@ import type Res from '../Res'
 export interface ResInit extends ResponseInit {
   meta?: Record<string, any>
   timeout: number
+  responseType: ResponseType
   throwHttpError: boolean
   [ABORT_CONTROLLER]: AbortController
   onResponseProgress?: ProgressCallback
@@ -16,6 +17,10 @@ export interface ReqInit extends Omit<RequestInit, 'body'> {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'PATCH'
   meta?: Record<string, any>
   timeout?: number
+  /**
+   * This should be consistent with the parsing method of Response
+   */
+  responseType?: ResponseType
   throwHttpError?: boolean
   body?: BodyInit | Record<string, any>
   onResponseProgress?: ProgressCallback
@@ -24,6 +29,7 @@ export interface ReqInit extends Omit<RequestInit, 'body'> {
 
 export type Next = (req: Req) => Promise<Res>
 export type Middleware = (next: Next) => (req: Req) => Promise<Res>
+export type ResponseType = 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text' | null | false
 
 export interface Progress {
   ratio: number // Current Transfer Ratio

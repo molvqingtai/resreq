@@ -1,9 +1,10 @@
-import { ResInit, ProgressCallback } from './types'
+import { ResInit, ResponseType, ProgressCallback } from './types'
 import { ON_GLOBAL_RESPONSE_PROGRESS, ABORT_CONTROLLER } from './constants'
 
 export default class Res extends Response {
   readonly meta: Record<string, any>
   readonly timeout: number
+  readonly responseType: ResponseType
   readonly throwHttpError: boolean
   readonly abortController: AbortController
   readonly onResponseProgress?: ProgressCallback;
@@ -16,6 +17,7 @@ export default class Res extends Response {
     })
     this.meta = init.meta ?? response.meta
     this.timeout = init.timeout ?? response.timeout
+    this.responseType = init.responseType ?? response.responseType
     this.throwHttpError = init.throwHttpError ?? response.throwHttpError
     this.abortController = init?.[ABORT_CONTROLLER] ?? response.abortController
     this.onResponseProgress = init?.onResponseProgress ?? response.onResponseProgress

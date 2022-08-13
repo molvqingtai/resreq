@@ -1,10 +1,11 @@
-import { ReqInit, ProgressCallback } from './types'
+import { ReqInit, ProgressCallback, ResponseType } from './types'
 import { ON_GLOBAL_RESPONSE_PROGRESS, ABORT_CONTROLLER } from './constants'
 import isJsonBody from './helpers/isJsonBody'
 
 export default class Req extends Request {
   readonly meta?: Record<string, any>
   readonly timeout: number
+  readonly responseType: ResponseType
   readonly throwHttpError: boolean;
   readonly [ABORT_CONTROLLER]: AbortController
   readonly onResponseProgress?: ProgressCallback;
@@ -71,6 +72,7 @@ export default class Req extends Request {
     })
     this.meta = init?.meta ?? request.meta
     this.timeout = init?.timeout ?? request?.timeout
+    this.responseType = init?.responseType ?? request.responseType
     this.throwHttpError = init?.throwHttpError ?? request.throwHttpError
     this.onResponseProgress = init?.onResponseProgress ?? request.onResponseProgress
     this[ON_GLOBAL_RESPONSE_PROGRESS] = init?.[ON_GLOBAL_RESPONSE_PROGRESS] ?? request[ON_GLOBAL_RESPONSE_PROGRESS]
