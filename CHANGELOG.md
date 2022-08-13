@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/molvqingtai/resreq/compare/v1.0.3...v1.1.0) (2022-08-13)
+
+
+### Bug Fixes
+
+* refine Res type ([c333393](https://github.com/molvqingtai/resreq/commit/c333393ab413b5ca93a42d82c656d688fb4af035))
+
+
+### Features
+
+* add the responseType option ([54e38e1](https://github.com/molvqingtai/resreq/commit/54e38e184b1f6a7a8ecba2d2b02123887a407957))
+
 ## [1.0.3](https://github.com/molvqingtai/resreq/compare/v1.0.2...v1.0.3) (2022-07-05)
 
 
