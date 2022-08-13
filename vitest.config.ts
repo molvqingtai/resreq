@@ -2,6 +2,9 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    environment: 'edge-runtime'
+    environment: 'edge-runtime',
+    coverage: {
+      reporter: ['text', 'json', 'html']
+    }
   }
 })
