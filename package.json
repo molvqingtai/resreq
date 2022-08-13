@@ -11,7 +11,7 @@
     "lint": "eslint src __tests__ --ext .js,.ts --fix",
     "tsc": "tsc --noEmit",
     "docs": "typedoc src/index.ts",
-    "test": "vitest",
+    "test": "vitest run --coverage",
     "prepare": "husky install"
   },
   "keywords": [
@@ -61,6 +61,7 @@
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
     "@vitest/ui": "^0.21.1",
+    "c8": "^7.12.0",
     "edge-runtime": "1.1.0-beta.26",
     "eslint": "^8.21.0",
     "eslint-config-prettier": "^8.5.0",
