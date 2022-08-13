@@ -7,7 +7,7 @@ import { ABORT_CONTROLLER } from '../constants'
  * https://github.com/denysdovhan/wtfjs/issues/61
  * https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout
  */
-const timeout: Middleware = (next) => async (req) => {
+const timeoutHandler: Middleware = (next) => async (req) => {
   return await new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       req[ABORT_CONTROLLER].abort()
@@ -35,4 +35,4 @@ const timeout: Middleware = (next) => async (req) => {
   // }
 }
 
-export default timeout
+export default timeoutHandler

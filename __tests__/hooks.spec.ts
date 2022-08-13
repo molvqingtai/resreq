@@ -16,12 +16,13 @@ describe('Test hooks', () => {
     })
     const resreq = new Resreq({
       baseUrl,
+      responseType: 'text',
       onResponseProgress(progress, chunk) {
         progressInfo.push([progress, new TextDecoder().decode(chunk)])
       }
     })
 
-    const res = await (await resreq.request({ url: '/api' })).text()
+    const res = await resreq.request({ url: '/api' })
 
     expect(progressInfo).toEqual([
       [{ ratio: 0, carry: 0, total: 0 }, ''],
@@ -44,17 +45,16 @@ describe('Test hooks', () => {
       ctx.res.end('bar')
     })
     const resreq = new Resreq({
-      baseUrl
+      baseUrl,
+      responseType: 'text'
     })
 
-    const res = await (
-      await resreq.request({
-        url: '/api',
-        onResponseProgress(progress, chunk) {
-          progressInfo.push([progress, new TextDecoder().decode(chunk)])
-        }
-      })
-    ).text()
+    const res = await resreq.request({
+      url: '/api',
+      onResponseProgress(progress, chunk) {
+        progressInfo.push([progress, new TextDecoder().decode(chunk)])
+      }
+    })
 
     expect(progressInfo).toEqual([
       [{ ratio: 0, carry: 0, total: 0 }, ''],
@@ -80,6 +80,7 @@ describe('Test hooks', () => {
 
     const resreq = new Resreq({
       baseUrl,
+      responseType: 'text',
       onResponseProgress: () => globalProgressCallback()
     })
 

@@ -47,36 +47,27 @@ globalThis.AbortController = AbortController
 import Resreq from 'resreq'
 
 const resreq = new Resreq({
-  baseUrl: 'https://example.com'
+  baseUrl: 'https://example.com',
+  responseType: 'json'
 })
 
 const res = await resreq.request({
-  url: '/api',
+  url: '/api/user',
   method: 'GET',
   params: { foo: 'bar' }
 })
+console.log(res) // Object
 
-console.log(res.json())
+const res = await resreq.get('/api/download', {
+  responseType: 'blob'
+})
+console.log(res) // Blob
 ```
 
-**Use Methods**
+**Cancel request**
 
 ```typescript
 const resreq = new Resreq()
-
-// Get request
-const res = await resreq.get('https://example.com/api', {
-  params: { foo: 'bar' }
-})
-
-console.log(res.json())
-
-// Post request
-const res = await resreq.post('https://example.com/api', {
-  body: { foo: 'bar' }
-})
-
-console.log(res.json())
 
 // Cancel request
 const abortController = new AbortController()
@@ -114,7 +105,7 @@ const res = await resreq.get('/api', {
   params: { foo: 'bar' }
 })
 
-console.log(res.json())
+console.log(res)
 ```
 
 ### API
@@ -128,6 +119,7 @@ const resreq = new Resreq({
   baseUrl: 'https://example.com',
   timeout: 10000,
   throwHttpError: true,
+	responseType: 'json',
   onResponseProgress:(progress: Progress, chunk: Uint8Array){
     console.log(progress,chunk)
   }
@@ -153,7 +145,7 @@ const res = await resreq.request({
   }
 })
 
-console.log(res.json())
+console.log(res)
 ```
 
 **resreq\[method\](options?:Options)**
@@ -173,7 +165,7 @@ const res = await resreq.get('/api',{
   }
 })
 
-console.log(res.json())
+console.log(res)
 ```
 
 **resreq.use(middleware:Middleware)**
@@ -242,6 +234,7 @@ interface Options extends Omit<RequestInit, 'body'> {
   body?: BodyInit | Record<string, any>
   meta?: Record<string, any>
   timeout?: number
+  responseType?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text' | null | false
   throwHttpError?: boolean
   onResponseProgress?: ProgressCallback
 }
@@ -254,6 +247,7 @@ interface Options extends Omit<RequestInit, 'body'> {
 - **body**: Based on [BodyInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request), and adding `Record<string, any>`, which means you can pass `object` directly, instead of `JSON.stringify(object)`, which will automatically add `Content-Type: application/json` request headers
 - **meta**: The extra information that needs to be carried in the request is not really sent to the server, but it can be obtained in the `res.meta`
 - **timeout**: Specify the number of milliseconds of time before the request, if the time is exceeded the request will be aborted, the default value is 1000ms
+- **responseType**: Set how the response will be parsed, if not set or set to false, the [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) instance will be returned
 - **throwHttpError**: If true, a status code outside of 200-299 will throw an error, the default value is false
 - **onResponseProgress**: The download progress hook, which depends on the [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream), does not currently work in node
 
@@ -275,6 +269,7 @@ interface ReqInit extends Omit<RequestInit, 'body'> {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'PATCH'
   meta?: Record<string, any>
   timeout?: number
+  responseType?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text' | null | false
   throwHttpError?: boolean
   body?: BodyInit | Record<string, any>
   onResponseProgress?: ProgressCallback
@@ -291,6 +286,7 @@ ResInit extends from the [ResponseInit](https://developer.mozilla.org/en-US/docs
 interface ResInit extends ResponseInit {
   meta?: Record<string, any>
   timeout?: number
+  responseType?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text' | null | false
   throwHttpError?: boolean
   onResponseProgress?: ProgressCallback
 }
