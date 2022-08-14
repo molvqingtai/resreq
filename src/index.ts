@@ -15,7 +15,6 @@ export default class Resreq {
       ...options,
       baseUrl: options.baseUrl || '',
       timeout: options.timeout || 1000,
-      responseType: options.responseType,
       throwHttpError: options.throwHttpError || false
     }
   }
