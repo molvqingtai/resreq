@@ -69,10 +69,9 @@ console.log(res) // Blob
 ```typescript
 const resreq = new Resreq()
 
-// Cancel request
 const abortController = new AbortController()
 
-await resreq.get('https://example.com/api', {
+resreq.get('https://example.com/api', {
   signal: abortController.signal
 }).catch(error => {
   console.log(error) // Abort error
@@ -118,8 +117,8 @@ Create a resreq instance and configure the global options
 const resreq = new Resreq({
   baseUrl: 'https://example.com',
   timeout: 10000,
+  responseType: 'json',
   throwHttpError: true,
-	responseType: 'json',
   onResponseProgress:(progress: Progress, chunk: Uint8Array){
     console.log(progress,chunk)
   }
@@ -161,7 +160,7 @@ const res = await resreq.get('/api',{
   params: { foo: 'bar' },
   throwHttpError: true,
   onResponseProgress:(progress: Progress, chunk: Uint8Array){
- 	  console.log(progress,chunk)
+    console.log(progress,chunk)
   }
 })
 
