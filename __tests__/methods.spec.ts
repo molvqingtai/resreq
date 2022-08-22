@@ -153,6 +153,8 @@ describe('Test request methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual({ message: 'ok' })
+
+    server.close()
   })
 
   test('POST request with String', async () => {
@@ -175,6 +177,8 @@ describe('Test request methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual('ok')
+
+    server.close()
   })
 
   test('POST request with URLSearchParams', async () => {
@@ -197,6 +201,8 @@ describe('Test request methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual('message=ok')
+
+    server.close()
   })
 
   test('POST request with Blob', async () => {
@@ -219,6 +225,8 @@ describe('Test request methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual({ message: 'ok' })
+
+    server.close()
   })
 
   test('POST request with ArrayBuffer', async () => {
@@ -244,6 +252,8 @@ describe('Test request methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual('ok')
+
+    server.close()
   })
 
   test('Put request with formData', async () => {

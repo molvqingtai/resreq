@@ -92,6 +92,7 @@ describe('Test errors', () => {
     })
 
     await expect(res).rejects.toThrowError(/timeout/)
+
     server.close()
   })
 
