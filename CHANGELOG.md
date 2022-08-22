@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/molvqingtai/resreq/compare/v1.1.0...v1.1.1) (2022-08-22)
+
+
+### Performance Improvements
+
+* add mod.ts for deno ([4a6f88b](https://github.com/molvqingtai/resreq/commit/4a6f88bcb293e0293bb7d90b7b1966b54b752c1e))
+
 # [1.1.0](https://github.com/molvqingtai/resreq/compare/v1.0.3...v1.1.0) (2022-08-13)
 
 
