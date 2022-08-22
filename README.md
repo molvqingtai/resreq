@@ -23,7 +23,7 @@ pnpm install resreq
 **or**
 
 ```typescript
-import Resreq from 'https://deno.land/x/resreq/src/index.ts'
+import Resreq from 'https://deno.land/x/resreq/mod.ts'
 ```
 
 If you use it in [Node](https://nodejs.org/en/), you need to add some polyfill
