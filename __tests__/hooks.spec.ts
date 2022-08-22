@@ -31,7 +31,7 @@ describe('Test hooks', () => {
     ])
     expect(res).toBe('foobar')
 
-    await server.close()
+    server.close()
   })
 
   test('Use local onResponseProgress hook', async () => {
@@ -63,7 +63,7 @@ describe('Test hooks', () => {
     ])
     expect(res).toBe('foobar')
 
-    await server.close()
+    server.close()
   })
 
   test('Hooks standalone callbacks', async () => {
@@ -91,5 +91,7 @@ describe('Test hooks', () => {
 
     expect(globalProgressCallback).toBeCalledTimes(2)
     expect(localProgressCallback).toBeCalledTimes(2)
+
+    server.close()
   })
 })
