@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/molvqingtai/resreq/compare/v1.1.1...v1.1.2) (2022-08-24)
+
+
+### Performance Improvements
+
+* use the standard export for deno ([c96463a](https://github.com/molvqingtai/resreq/commit/c96463a2519cd62bf5d5d34e668aa78802b1359f))
+
 ## [1.1.1](https://github.com/molvqingtai/resreq/compare/v1.1.0...v1.1.1) (2022-08-22)
 
 
