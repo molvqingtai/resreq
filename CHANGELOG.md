@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/molvqingtai/resreq/compare/v1.1.2...v1.1.3) (2022-08-24)
+
+
+### Bug Fixes
+
+* remove the incorrect deno entry microsoft/TypeScript[#37582](https://github.com/molvqingtai/resreq/issues/37582) ([b69bfec](https://github.com/molvqingtai/resreq/commit/b69bfec15231bed817f308029024add4ae788290))
+
 ## [1.1.2](https://github.com/molvqingtai/resreq/compare/v1.1.1...v1.1.2) (2022-08-24)
 
 
