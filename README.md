@@ -204,22 +204,23 @@ console.log(res.headers.get('X-Custom-Header')) // bar
 In the middleware, use `new Req()` and `new Res()` to rewrite the request and response
 
 ```typescript
-import Resreq, { Middleware, Req, Res } from 'resreq'
+import Resreq, { Req, Res } from 'resreq'
 
 const resreq = new Resreq({
   baseUrl: 'https://example.com'
 })
 
-const middleware: Middleware = next => async req => {
+resreq.use(next => async req => {
   const _req = new Req(req, {
-    url: 'http://localhost:3000/mock'
+    url: 'https://example.com/mock'
   })
+
   const res = await next(_req)
   return new Res(res, {
     status: 200,
     statusText: 'mock success'
   })
-}
+})
 
 const res: Response = await resreq.get('/api')
 
