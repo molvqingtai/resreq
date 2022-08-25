@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/molvqingtai/resreq/compare/v1.1.3...v1.1.4) (2022-08-25)
+
+
+### Bug Fixes
+
+* new Res() Parameter type fix ([1ab627b](https://github.com/molvqingtai/resreq/commit/1ab627bde2c408d636ecfda3973423f809195cbb))
+
 ## [1.1.3](https://github.com/molvqingtai/resreq/compare/v1.1.2...v1.1.3) (2022-08-24)
 
 
