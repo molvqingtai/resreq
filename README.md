@@ -119,8 +119,8 @@ const resreq = new Resreq({
   timeout: 10000,
   responseType: 'json',
   throwHttpError: true,
-  onResponseProgress:(progress: Progress, chunk: Uint8Array){
-    console.log(progress,chunk)
+  onResponseProgress(progress, chunk) {
+    console.log(progress, chunk)
   }
 })
 ```
@@ -139,8 +139,8 @@ const res = await resreq.request({
   method: 'GET',
   params: { foo: 'bar' },
   throwHttpError: true,
-  onResponseProgress:(progress: Progress, chunk: Uint8Array){
-    console.log(progress,chunk)
+  onResponseProgress(progress, chunk) {
+    console.log(progress, chunk)
   }
 })
 
@@ -156,11 +156,11 @@ const resreq = new Resreq({
   baseUrl: 'https://example.com'
 })
 
-const res = await resreq.get('/api',{
+const res = await resreq.get('/api', {
   params: { foo: 'bar' },
   throwHttpError: true,
-  onResponseProgress:(progress: Progress, chunk: Uint8Array){
-    console.log(progress,chunk)
+  onResponseProgress(progress, chunk) {
+    console.log(progress, chunk)
   }
 })
 
@@ -172,11 +172,13 @@ console.log(res)
 Rewriting request headers using middleware
 
 ```typescript
+import Resreq, { Req } from 'resreq'
+
 const resreq = new Resreq({
   baseUrl: 'https://example.com'
 })
 
-resreq.use((next) => async (req) => {
+resreq.use(next => async req => {
   // Create a new request with Req
   const _req = new Req(req, {
     headers: {
@@ -186,7 +188,7 @@ resreq.use((next) => async (req) => {
   return await next(_req)
 })
 
-const res = await resreq.get('/api', {
+const res: Response = await resreq.get('/api', {
   headers: {
     'X-Custom-Header': 'foo'
   }
@@ -202,11 +204,15 @@ console.log(res.headers.get('X-Custom-Header')) // bar
 In the middleware, use `new Req()` and `new Res()` to rewrite the request and response
 
 ```typescript
-import { Middleware, Req, Res } from './index'
+import Resreq, { Middleware, Req, Res } from 'resreq'
 
-const middleware: Middleware = (next) => async (req) => {
+const resreq = new Resreq({
+  baseUrl: 'https://example.com'
+})
+
+const middleware: Middleware = next => async req => {
   const _req = new Req(req, {
-    url: 'http://localhost:3000/mock/api'
+    url: 'http://localhost:3000/mock'
   })
   const res = await next(_req)
   return new Res(res, {
@@ -214,6 +220,10 @@ const middleware: Middleware = (next) => async (req) => {
     statusText: 'mock success'
   })
 }
+
+const res: Response = await resreq.get('/api')
+
+console.log(res.status) // 200
 ```
 > **Warning**
 > Req & Res extends from [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response); to create a new request and response in the middleware, use Req & Res

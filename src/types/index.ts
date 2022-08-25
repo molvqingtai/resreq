@@ -4,10 +4,10 @@ import type Res from '../Res'
 
 export interface ResInit extends ResponseInit {
   meta?: Record<string, any>
-  timeout: number
-  responseType: ResponseType
-  throwHttpError: boolean
-  [ABORT_CONTROLLER]: AbortController
+  timeout?: number
+  responseType?: ResponseType
+  throwHttpError?: boolean
+  [ABORT_CONTROLLER]?: AbortController
   onResponseProgress?: ProgressCallback
   [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
 }
