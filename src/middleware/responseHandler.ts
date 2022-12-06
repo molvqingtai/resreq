@@ -52,6 +52,9 @@ const createReadableStream = (response: Response, onResponseProgress: ProgressCa
     }
   })
 
+/**
+ * The first middleware through which the response passes, initializing the Res
+ */
 const responseHandler: Middleware = (next) => async (req) => {
   // Here is the native Response
   const response: Response = await next(req)
@@ -67,8 +70,8 @@ const responseHandler: Middleware = (next) => async (req) => {
 
   /**
    * TODO: When timeout middleware can use AbortSignal.reason to throw error to cancel comments
-   *
    * Close stream when requesting cancel
+   * References：https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/reason
    */
   //  const readableStream = createReadableStream(response.clone(), (...args) => {
   //   response.onResponseProgress?.(...args)
@@ -79,7 +82,10 @@ const responseHandler: Middleware = (next) => async (req) => {
   //   void readableStream.cancel()
   // })
 
-  return new Res(response as Res, req)
+  /**
+   * Filter out request.body (not iterable) by destructuring it, and keep headers
+   */
+  return new Res(response as Res, { ...req, headers: req.headers })
 }
 
 export default responseHandler

@@ -1,6 +1,6 @@
 import { test, describe, expect, vi } from 'vitest'
 import Server from './helpers/Server'
-import Resreq, { Req } from '../src'
+import Resreq, { Req, Res } from '../src'
 import sleep from './helpers/sleep'
 
 interface ApiResponse {
@@ -12,8 +12,8 @@ interface ApiResponse {
 describe('Test middleware', () => {
   test('Request success with middleware', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL })
 
     const requestLog = vi.fn()
     const responseLog = vi.fn()
@@ -38,8 +38,8 @@ describe('Test middleware', () => {
 
   test('Request success with multiple middleware', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL })
 
     const requestLog = vi.fn()
     const responseLog = vi.fn()
@@ -74,8 +74,8 @@ describe('Test middleware', () => {
 
   test('Request error with middleware', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL })
 
     const requestLog = vi.fn()
 
@@ -97,8 +97,8 @@ describe('Test middleware', () => {
 
   test('Request error with multiple middleware', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL })
 
     const requestLog = vi.fn()
     const responseLog = vi.fn()
@@ -138,8 +138,8 @@ describe('Test middleware', () => {
 describe('Test overload options', () => {
   test('Overload url and method', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL })
 
     server.get('/api', (ctx) => {
       ctx.status = 200
@@ -147,7 +147,7 @@ describe('Test overload options', () => {
 
     resreq.use((next) => async (req) => {
       const _req = new Req(req, {
-        url: baseUrl + '/api',
+        url: baseURL + '/api',
         method: 'GET'
       })
       return await next(_req)
@@ -160,8 +160,8 @@ describe('Test overload options', () => {
 
   test('Overload meta', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL })
 
     server.get('/api', (ctx) => {
       ctx.status = 200
@@ -189,8 +189,8 @@ describe('Test overload options', () => {
 
   test('Overload headers', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL })
 
     server.get('/api', (ctx) => {
       ctx.status = 200
@@ -218,10 +218,10 @@ describe('Test overload options', () => {
     server.close()
   })
 
-  test('Overload body', async () => {
+  test('Overload request body', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.post('/api', (ctx) => {
       ctx.body = {
@@ -233,10 +233,50 @@ describe('Test overload options', () => {
     resreq.use((next) => async (req) => {
       const formData = new FormData()
       formData.append('message', 'no')
+
       const _req = new Req(req, {
         body: formData
       })
+
       return await next(_req)
+    })
+
+    const res: ApiResponse = await resreq.post('/api', {
+      body: {
+        message: 'ok'
+      }
+    })
+
+    expect(res.data).toEqual({ message: 'no' })
+
+    server.close()
+  })
+
+  test('Overload response body', async () => {
+    const server = new Server()
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
+
+    server.post('/api', (ctx) => {
+      ctx.body = {
+        code: 200,
+        data: ctx.request.body
+      }
+    })
+
+    resreq.use((next) => async (req) => {
+      const formData = new FormData()
+      formData.append('message', 'no')
+
+      const res = await next(req)
+
+      return new Res(res, {
+        body: {
+          data: {
+            message: 'no'
+          }
+        }
+      })
     })
 
     const res: ApiResponse = await resreq.post('/api', {
@@ -252,8 +292,8 @@ describe('Test overload options', () => {
 
   test('Overload throwHttpError', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL })
     resreq.use((next) => async (req) => {
       const _req = new Req(req, {
         throwHttpError: true
@@ -272,8 +312,8 @@ describe('Test overload options', () => {
 
   test('Overload timeout', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, timeout: 10000 })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, timeout: 10000 })
 
     server.get('/api', async (ctx) => {
       await sleep(500)
@@ -293,8 +333,8 @@ describe('Test overload options', () => {
 
   test('Overload responseType', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.get('/api', async (ctx) => {
       ctx.body = {

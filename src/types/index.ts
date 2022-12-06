@@ -4,6 +4,7 @@ import type Res from '../Res'
 
 export interface ResInit extends ResponseInit {
   meta?: Record<string, any>
+  body?: BodyInit | Record<string, any> | null
   timeout?: number
   responseType?: ResponseType
   throwHttpError?: boolean
@@ -40,6 +41,6 @@ export interface Progress {
 export type ProgressCallback = (progress: Progress, chunk: Uint8Array) => void
 
 export interface Options extends ReqInit {
-  baseUrl?: string
+  baseURL?: string
   params?: Record<string, any>
 }

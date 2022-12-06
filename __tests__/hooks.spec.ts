@@ -6,7 +6,7 @@ import sleep from './helpers/sleep'
 describe('Test hooks', () => {
   test('Use global onResponseProgress hook', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
+    const { origin: baseURL } = await server.listen()
     const progressInfo: any[][] = []
     server.get('/api', async (ctx) => {
       ctx.res.writeHead(200, { 'content-length': 6 })
@@ -15,7 +15,7 @@ describe('Test hooks', () => {
       ctx.res.end('bar')
     })
     const resreq = new Resreq({
-      baseUrl,
+      baseURL,
       responseType: 'text',
       onResponseProgress(progress, chunk) {
         progressInfo.push([progress, new TextDecoder().decode(chunk)])
@@ -36,7 +36,7 @@ describe('Test hooks', () => {
 
   test('Use local onResponseProgress hook', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
+    const { origin: baseURL } = await server.listen()
     const progressInfo: any[][] = []
     server.get('/api', async (ctx) => {
       ctx.res.writeHead(200, { 'content-length': 6 })
@@ -45,7 +45,7 @@ describe('Test hooks', () => {
       ctx.res.end('bar')
     })
     const resreq = new Resreq({
-      baseUrl,
+      baseURL,
       responseType: 'text'
     })
 
@@ -68,7 +68,7 @@ describe('Test hooks', () => {
 
   test('Hooks standalone callbacks', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
+    const { origin: baseURL } = await server.listen()
 
     const globalProgressCallback = vi.fn()
     const localProgressCallback = vi.fn()
@@ -79,7 +79,7 @@ describe('Test hooks', () => {
     })
 
     const resreq = new Resreq({
-      baseUrl,
+      baseURL,
       responseType: 'text',
       onResponseProgress: () => globalProgressCallback()
     })

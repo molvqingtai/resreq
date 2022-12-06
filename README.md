@@ -47,7 +47,7 @@ globalThis.AbortController = AbortController
 import Resreq from 'resreq'
 
 const resreq = new Resreq({
-  baseUrl: 'https://example.com',
+  baseURL: 'https://example.com',
   responseType: 'json'
 })
 
@@ -71,11 +71,13 @@ const resreq = new Resreq()
 
 const abortController = new AbortController()
 
-resreq.get('https://example.com/api', {
-  signal: abortController.signal
-}).catch(error => {
-  console.log(error) // Abort error
-})
+resreq
+  .get('https://example.com/api', {
+    signal: abortController.signal
+  })
+  .catch((error) => {
+    console.log(error) // Abort error
+  })
 
 abortController.abort() // request abort
 ```
@@ -84,7 +86,7 @@ abortController.abort() // request abort
 
 ```typescript
 const resreq = new Resreq({
-  baseUrl: 'https://example.com'
+  baseURL: 'https://example.com'
 })
 
 // Intercepting responses and requests using middleware
@@ -115,7 +117,7 @@ Create a resreq instance and configure the global options
 
 ```typescript
 const resreq = new Resreq({
-  baseUrl: 'https://example.com',
+  baseURL: 'https://example.com',
   timeout: 10000,
   responseType: 'json',
   throwHttpError: true,
@@ -131,7 +133,7 @@ Use ''request'' to send the request and configure the options
 
 ```typescript
 const resreq = new Resreq({
-  baseUrl: 'https://example.com'
+  baseURL: 'https://example.com'
 })
 
 const res = await resreq.request({
@@ -153,7 +155,7 @@ Use ''method'' to send the request and configure the options
 
 ```typescript
 const resreq = new Resreq({
-  baseUrl: 'https://example.com'
+  baseURL: 'https://example.com'
 })
 
 const res = await resreq.get('/api', {
@@ -175,10 +177,10 @@ Rewriting request headers using middleware
 import Resreq, { Req } from 'resreq'
 
 const resreq = new Resreq({
-  baseUrl: 'https://example.com'
+  baseURL: 'https://example.com'
 })
 
-resreq.use(next => async req => {
+resreq.use((next) => async (req) => {
   // Create a new request with Req
   const _req = new Req(req, {
     headers: {
@@ -207,10 +209,10 @@ In the middleware, use `new Req()` and `new Res()` to rewrite the request and re
 import Resreq, { Req, Res } from 'resreq'
 
 const resreq = new Resreq({
-  baseUrl: 'https://example.com'
+  baseURL: 'https://example.com'
 })
 
-resreq.use(next => async req => {
+resreq.use((next) => async (req) => {
   const _req = new Req(req, {
     url: 'https://example.com/mock'
   })
@@ -226,6 +228,7 @@ const res: Response = await resreq.get('/api')
 
 console.log(res.status) // 200
 ```
+
 > **Warning**
 > Req & Res extends from [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response); to create a new request and response in the middleware, use Req & Res
 
@@ -237,7 +240,7 @@ Options extends from the [RequestInit](https://developer.mozilla.org/en-US/docs/
 
 ```typescript
 interface Options extends Omit<RequestInit, 'body'> {
-  baseUrl?: string
+  baseURL?: string
   url?: string
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'PATCH'
   params?: Record<string, any>
@@ -250,7 +253,7 @@ interface Options extends Omit<RequestInit, 'body'> {
 }
 ```
 
-- **baseUrl**: The url prefix of the request will be concatenated with the url in `resreq[method]()` to form a complete request address, the default value is ' '
+- **baseURL**: The url prefix of the request will be concatenated with the url in `resreq[method]()` to form a complete request address, the default value is ' '
 - **url**: Request url, the default value is ' '
 - **method**：Request method, the default value is 'GET'
 - **params**: The params of a `resreq.get` request are automatically added to the url via the [new URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) method
@@ -285,6 +288,7 @@ interface ReqInit extends Omit<RequestInit, 'body'> {
   onResponseProgress?: ProgressCallback
 }
 ```
+
 > **Note**
 > That its 'headers' behave differently than 'Options.headers', which overrides the global headers
 

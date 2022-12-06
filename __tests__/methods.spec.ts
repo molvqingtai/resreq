@@ -11,8 +11,8 @@ interface ApiResponse {
 describe('Test request methods', () => {
   test('request', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.get('/api', (ctx) => {
       ctx.body = {
@@ -37,8 +37,8 @@ describe('Test request methods', () => {
 
   test('request options overload', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.get('/api', (ctx) => {
       ctx.body = 'foobar'
@@ -58,8 +58,8 @@ describe('Test request methods', () => {
 
   test('GET request with query', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.get('/api', (ctx) => {
       ctx.body = {
@@ -80,8 +80,8 @@ describe('Test request methods', () => {
 
   test('GET request with params', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.get('/api', (ctx) => {
       ctx.body = {
@@ -106,8 +106,8 @@ describe('Test request methods', () => {
 
   test('POST request with formData', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.post('/api', (ctx) => {
       ctx.body = {
@@ -133,8 +133,8 @@ describe('Test request methods', () => {
 
   test('POST request with JSON', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.post('/api', (ctx) => {
       ctx.body = {
@@ -159,8 +159,8 @@ describe('Test request methods', () => {
 
   test('POST request with String', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.post('/api', (ctx) => {
       ctx.body = {
@@ -183,8 +183,8 @@ describe('Test request methods', () => {
 
   test('POST request with URLSearchParams', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.post('/api', (ctx) => {
       ctx.body = {
@@ -200,15 +200,15 @@ describe('Test request methods', () => {
 
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
-    expect(res.data).toEqual('message=ok')
+    expect(res.data).toEqual({ message: 'ok' })
 
     server.close()
   })
 
   test('POST request with Blob', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.post('/api', (ctx) => {
       ctx.body = {
@@ -231,8 +231,8 @@ describe('Test request methods', () => {
 
   test('POST request with ArrayBuffer', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.post('/api', (ctx) => {
       ctx.body = {
@@ -258,8 +258,8 @@ describe('Test request methods', () => {
 
   test('Put request with formData', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.put('/api', (ctx) => {
       ctx.body = {
@@ -285,8 +285,8 @@ describe('Test request methods', () => {
 
   test('Put request with json', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.put('/api', (ctx) => {
       ctx.body = {
@@ -311,8 +311,8 @@ describe('Test request methods', () => {
 
   test('Delete request', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
-    const resreq = new Resreq({ baseUrl, responseType: 'json' })
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.delete('/api', (ctx) => {
       ctx.body = {
@@ -333,9 +333,9 @@ describe('Test request methods', () => {
 
   test('Merge headers', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
+    const { origin: baseURL } = await server.listen()
     const resreq = new Resreq({
-      baseUrl,
+      baseURL,
       headers: {
         'Content-Type': 'application/json'
       }
