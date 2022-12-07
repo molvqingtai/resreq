@@ -1,7 +1,7 @@
 import { ReqInit, ProgressCallback, ResponseType } from './types'
 import { ON_GLOBAL_DOWNLOAD_PROGRESS, ABORT_CONTROLLER } from './constants'
 import isJsonBody from './helpers/isJsonBody'
-import pkg from '../package.json'
+import { version } from '../package.json'
 
 export default class Req extends Request {
   readonly meta?: Record<string, any>
@@ -21,7 +21,7 @@ export default class Req extends Request {
      * User-Agent is specified; handle case where no UA header is desired
      * Only set header if it hasn't been set in config
      */
-    !headers.has('User-Agent') && headers.set('User-Agent', `resreq/${pkg.version}`)
+    !headers.has('User-Agent') && headers.set('User-Agent', `resreq/${version}`)
 
     /**
      * If he init.body is JSON, reset Header and Body
