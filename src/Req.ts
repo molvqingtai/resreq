@@ -1,18 +1,27 @@
 import { ReqInit, ProgressCallback, ResponseType } from './types'
 import { ON_GLOBAL_RESPONSE_PROGRESS, ABORT_CONTROLLER } from './constants'
 import isJsonBody from './helpers/isJsonBody'
+import pkg from '../package.json'
 
 export default class Req extends Request {
   readonly meta?: Record<string, any>
   readonly timeout: number
-  readonly responseType: ResponseType
+  readonly responseType?: ResponseType
   readonly throwHttpError: boolean;
   readonly [ABORT_CONTROLLER]: AbortController
-  readonly onResponseProgress?: ProgressCallback;
+  readonly onDownloadProgress?: ProgressCallback;
   readonly [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
-  constructor(request: Req, init?: ReqInit) {
-    let body = init?.body as BodyInit
-    const headers = new Headers(init?.headers ?? request.headers)
+
+  constructor(request: Req, init: ReqInit | Request) {
+    let body = (init.body ?? request.body) as BodyInit
+    const headers = new Headers(init.headers ?? request.headers)
+
+    /**
+     * Set User-Agent (required by some servers)
+     * User-Agent is specified; handle case where no UA header is desired
+     * Only set header if it hasn't been set in config
+     */
+    !headers.has('User-Agent') && headers.set('User-Agent', `resreq/${pkg.version}`)
 
     /**
      * If he init.body is JSON, reset Header and Body
@@ -47,35 +56,36 @@ export default class Req extends Request {
      * so need to add abortController.signal
      * Reference: https://github.com/github/fetch/pull/1003
      */
-    const signal = init?.signal || request.signal || abortController.signal
+    const signal = init.signal || request.signal || abortController.signal
 
     /**
      * If the user input a new url, a new request object is created with the new url
      */
-    super(new Request(init?.url ?? request.url), {
-      method: init?.method ?? request.method,
+    super(new Request(init.url ?? request.url), {
+      method: init.method ?? request.method,
       headers,
       body: body ?? request.body,
-      mode: init?.mode ?? request.mode,
+      mode: init.mode ?? request.mode,
       /**
        * In node-fetch polyfill, credentials will not work
        * Reference: https://github.com/node-fetch/node-fetch/issues/49
        */
-      credentials: init?.credentials ?? request.credentials,
-      cache: init?.cache ?? request.cache,
-      redirect: init?.redirect ?? request.redirect,
-      referrer: init?.referrer ?? request.referrer,
-      referrerPolicy: init?.referrerPolicy ?? request.referrerPolicy,
-      integrity: init?.integrity ?? request.integrity,
-      keepalive: init?.keepalive ?? request.keepalive,
+      credentials: init.credentials ?? request.credentials,
+      cache: init.cache ?? request.cache,
+      redirect: init.redirect ?? request.redirect,
+      referrer: init.referrer ?? request.referrer,
+      referrerPolicy: init.referrerPolicy ?? request.referrerPolicy,
+      integrity: init.integrity ?? request.integrity,
+      keepalive: init.keepalive ?? request.keepalive,
       signal: abortController.signal
     })
-    this.meta = init?.meta ?? request.meta
-    this.timeout = init?.timeout ?? request?.timeout
-    this.responseType = init?.responseType ?? request.responseType
-    this.throwHttpError = init?.throwHttpError ?? request.throwHttpError
-    this.onResponseProgress = init?.onResponseProgress ?? request.onResponseProgress
-    this[ON_GLOBAL_RESPONSE_PROGRESS] = init?.[ON_GLOBAL_RESPONSE_PROGRESS] ?? request[ON_GLOBAL_RESPONSE_PROGRESS]
+    this.meta = (init as ReqInit).meta ?? request.meta
+    this.timeout = (init as ReqInit).timeout ?? request.timeout
+    this.responseType = (init as ReqInit).responseType ?? request.responseType
+    this.throwHttpError = (init as ReqInit).throwHttpError ?? request.throwHttpError
+    this.onDownloadProgress = (init as ReqInit).onDownloadProgress ?? request.onDownloadProgress
+    this[ON_GLOBAL_RESPONSE_PROGRESS] =
+      (init as ReqInit)[ON_GLOBAL_RESPONSE_PROGRESS] ?? request[ON_GLOBAL_RESPONSE_PROGRESS]
     this[ABORT_CONTROLLER] = abortController
     signal.addEventListener('abort', () => abortController.abort())
   }

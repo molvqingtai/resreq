@@ -4,9 +4,9 @@ import Resreq from '../src'
 import sleep from './helpers/sleep'
 
 describe('Test hooks', () => {
-  test('Use global onResponseProgress hook', async () => {
+  test('Use global onDownloadProgress hook', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
+    const { origin: baseURL } = await server.listen()
     const progressInfo: any[][] = []
     server.get('/api', async (ctx) => {
       ctx.res.writeHead(200, { 'content-length': 6 })
@@ -15,9 +15,9 @@ describe('Test hooks', () => {
       ctx.res.end('bar')
     })
     const resreq = new Resreq({
-      baseUrl,
+      baseURL,
       responseType: 'text',
-      onResponseProgress(progress, chunk) {
+      onDownloadProgress(progress, chunk) {
         progressInfo.push([progress, new TextDecoder().decode(chunk)])
       }
     })
@@ -34,9 +34,9 @@ describe('Test hooks', () => {
     server.close()
   })
 
-  test('Use local onResponseProgress hook', async () => {
+  test('Use local onDownloadProgress hook', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
+    const { origin: baseURL } = await server.listen()
     const progressInfo: any[][] = []
     server.get('/api', async (ctx) => {
       ctx.res.writeHead(200, { 'content-length': 6 })
@@ -45,13 +45,13 @@ describe('Test hooks', () => {
       ctx.res.end('bar')
     })
     const resreq = new Resreq({
-      baseUrl,
+      baseURL,
       responseType: 'text'
     })
 
     const res = await resreq.request({
       url: '/api',
-      onResponseProgress(progress, chunk) {
+      onDownloadProgress(progress, chunk) {
         progressInfo.push([progress, new TextDecoder().decode(chunk)])
       }
     })
@@ -68,7 +68,7 @@ describe('Test hooks', () => {
 
   test('Hooks standalone callbacks', async () => {
     const server = new Server()
-    const { origin: baseUrl } = await server.listen()
+    const { origin: baseURL } = await server.listen()
 
     const globalProgressCallback = vi.fn()
     const localProgressCallback = vi.fn()
@@ -79,14 +79,14 @@ describe('Test hooks', () => {
     })
 
     const resreq = new Resreq({
-      baseUrl,
+      baseURL,
       responseType: 'text',
-      onResponseProgress: () => globalProgressCallback()
+      onDownloadProgress: () => globalProgressCallback()
     })
 
     await resreq.request({
       url: '/api',
-      onResponseProgress: () => localProgressCallback()
+      onDownloadProgress: () => localProgressCallback()
     })
 
     expect(globalProgressCallback).toBeCalledTimes(2)

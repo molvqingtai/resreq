@@ -4,11 +4,12 @@ import type Res from '../Res'
 
 export interface ResInit extends ResponseInit {
   meta?: Record<string, any>
+  body?: BodyInit | Record<string, any> | null
   timeout?: number
   responseType?: ResponseType
   throwHttpError?: boolean
   [ABORT_CONTROLLER]?: AbortController
-  onResponseProgress?: ProgressCallback
+  onDownloadProgress?: ProgressCallback
   [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
 }
 
@@ -23,7 +24,7 @@ export interface ReqInit extends Omit<RequestInit, 'body'> {
   responseType?: ResponseType
   throwHttpError?: boolean
   body?: BodyInit | Record<string, any>
-  onResponseProgress?: ProgressCallback
+  onDownloadProgress?: ProgressCallback
   [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
 }
 
@@ -40,6 +41,6 @@ export interface Progress {
 export type ProgressCallback = (progress: Progress, chunk: Uint8Array) => void
 
 export interface Options extends ReqInit {
-  baseUrl?: string
+  baseURL?: string
   params?: Record<string, any>
 }

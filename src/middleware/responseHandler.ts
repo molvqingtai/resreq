@@ -2,7 +2,7 @@ import { Middleware, ProgressCallback } from '../types'
 import { ON_GLOBAL_RESPONSE_PROGRESS } from '../constants'
 import Res from '../Res'
 
-const createReadableStream = (response: Response, onResponseProgress: ProgressCallback) =>
+const createReadableStream = (response: Response, onDownloadProgress: ProgressCallback) =>
   new ReadableStream({
     async start(controller) {
       /**
@@ -23,7 +23,7 @@ const createReadableStream = (response: Response, onResponseProgress: ProgressCa
 
       let carry = 0
 
-      onResponseProgress(
+      onDownloadProgress(
         {
           ratio: 0, // Current Transfer Ratio
           carry: 0, // Current Transfer Byte Size
@@ -37,7 +37,7 @@ const createReadableStream = (response: Response, onResponseProgress: ProgressCa
 
         carry += value.byteLength
 
-        onResponseProgress(
+        onDownloadProgress(
           {
             ratio: (carry / total) * 100,
             carry,
@@ -52,6 +52,9 @@ const createReadableStream = (response: Response, onResponseProgress: ProgressCa
     }
   })
 
+/**
+ * The first middleware through which the response passes, initializing the Res
+ */
 const responseHandler: Middleware = (next) => async (req) => {
   // Here is the native Response
   const response: Response = await next(req)
@@ -61,17 +64,17 @@ const responseHandler: Middleware = (next) => async (req) => {
   }
 
   createReadableStream(response.clone(), (...args) => {
-    req.onResponseProgress?.(...args)
+    req.onDownloadProgress?.(...args)
     req[ON_GLOBAL_RESPONSE_PROGRESS]?.(...args)
   })
 
   /**
    * TODO: When timeout middleware can use AbortSignal.reason to throw error to cancel comments
-   *
    * Close stream when requesting cancel
+   * References：https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/reason
    */
   //  const readableStream = createReadableStream(response.clone(), (...args) => {
-  //   response.onResponseProgress?.(...args)
+  //   response.onDownloadProgress?.(...args)
   //   req[ON_GLOBAL_RESPONSE_PROGRESS]?.(...args)
   // })
   // req[ABORT_CONTROLLER].signal.addEventListener('abort', () => {
@@ -79,7 +82,10 @@ const responseHandler: Middleware = (next) => async (req) => {
   //   void readableStream.cancel()
   // })
 
-  return new Res(response as Res, req)
+  /**
+   * Filter out request.body (not iterable) by destructuring it, and keep headers
+   */
+  return new Res(response as Res, { ...req, headers: req.headers })
 }
 
 export default responseHandler

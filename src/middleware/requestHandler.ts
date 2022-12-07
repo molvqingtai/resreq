@@ -1,11 +1,14 @@
 import { Middleware, Options } from '../types'
-import cleanUrl from '../helpers/cleanUrl'
 import Req from '../Req'
 
 interface OverrideReqInit extends Options {
+  url: string
   body?: BodyInit
 }
 
+/**
+ * The first middleware through which the request passes, initializing the Req
+ */
 const requestHandler: Middleware = (next) => async (_req) => {
   /**
    * Before the initial request, the req is just an options object，So need to override type
@@ -14,22 +17,19 @@ const requestHandler: Middleware = (next) => async (_req) => {
   const req = _req as OverrideReqInit
 
   const url = Object.entries(req.params || {})
-    .reduce((acc: URL, [key, value]) => {
-      acc.searchParams.append(key, value)
-      return acc
-    }, new URL(cleanUrl((req.baseUrl || '') + (req.url || ''))))
+    .reduce(
+      (acc: URL, [key, value]) => {
+        acc.searchParams.append(key, value)
+        return acc
+      },
+      req.baseURL ? new URL(req.url, req.baseURL) : new URL(req.url)
+    )
     .toString()
 
-  const request = new Request(url, req)
-
   /**
-   * Because in Req will determine whether the user passed in the url
-   * if the url exists, then Req will be created based on the new url
-   * so here need to delete the url
+   * Create a Req with the specified url
    */
-  Reflect.deleteProperty(req, 'url')
-
-  return await next(new Req(request as Req, req))
+  return await next(new Req(req as Req, { url }))
 }
 
 export default requestHandler

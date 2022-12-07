@@ -47,7 +47,7 @@ globalThis.AbortController = AbortController
 import Resreq from 'resreq'
 
 const resreq = new Resreq({
-  baseUrl: 'https://example.com',
+  baseURL: 'https://example.com',
   responseType: 'json'
 })
 
@@ -72,10 +72,11 @@ const resreq = new Resreq()
 const abortController = new AbortController()
 
 resreq.get('https://example.com/api', {
-  signal: abortController.signal
-}).catch(error => {
-  console.log(error) // Abort error
-})
+    signal: abortController.signal
+  })
+  .catch((error) => {
+    console.log(error) // Abort error
+  })
 
 abortController.abort() // request abort
 ```
@@ -84,7 +85,7 @@ abortController.abort() // request abort
 
 ```typescript
 const resreq = new Resreq({
-  baseUrl: 'https://example.com'
+  baseURL: 'https://example.com'
 })
 
 // Intercepting responses and requests using middleware
@@ -115,11 +116,11 @@ Create a resreq instance and configure the global options
 
 ```typescript
 const resreq = new Resreq({
-  baseUrl: 'https://example.com',
+  baseURL: 'https://example.com',
   timeout: 10000,
   responseType: 'json',
   throwHttpError: true,
-  onResponseProgress(progress, chunk) {
+  onDownloadProgress(progress, chunk) {
     console.log(progress, chunk)
   }
 })
@@ -131,7 +132,7 @@ Use ''request'' to send the request and configure the options
 
 ```typescript
 const resreq = new Resreq({
-  baseUrl: 'https://example.com'
+  baseURL: 'https://example.com'
 })
 
 const res = await resreq.request({
@@ -139,7 +140,7 @@ const res = await resreq.request({
   method: 'GET',
   params: { foo: 'bar' },
   throwHttpError: true,
-  onResponseProgress(progress, chunk) {
+  onDownloadProgress(progress, chunk) {
     console.log(progress, chunk)
   }
 })
@@ -153,13 +154,13 @@ Use ''method'' to send the request and configure the options
 
 ```typescript
 const resreq = new Resreq({
-  baseUrl: 'https://example.com'
+  baseURL: 'https://example.com'
 })
 
 const res = await resreq.get('/api', {
   params: { foo: 'bar' },
   throwHttpError: true,
-  onResponseProgress(progress, chunk) {
+  onDownloadProgress(progress, chunk) {
     console.log(progress, chunk)
   }
 })
@@ -175,10 +176,10 @@ Rewriting request headers using middleware
 import Resreq, { Req } from 'resreq'
 
 const resreq = new Resreq({
-  baseUrl: 'https://example.com'
+  baseURL: 'https://example.com'
 })
 
-resreq.use(next => async req => {
+resreq.use((next) => async (req) => {
   // Create a new request with Req
   const _req = new Req(req, {
     headers: {
@@ -207,10 +208,10 @@ In the middleware, use `new Req()` and `new Res()` to rewrite the request and re
 import Resreq, { Req, Res } from 'resreq'
 
 const resreq = new Resreq({
-  baseUrl: 'https://example.com'
+  baseURL: 'https://example.com'
 })
 
-resreq.use(next => async req => {
+resreq.use((next) => async (req) => {
   const _req = new Req(req, {
     url: 'https://example.com/mock'
   })
@@ -226,6 +227,7 @@ const res: Response = await resreq.get('/api')
 
 console.log(res.status) // 200
 ```
+
 > **Warning**
 > Req & Res extends from [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response); to create a new request and response in the middleware, use Req & Res
 
@@ -237,7 +239,7 @@ Options extends from the [RequestInit](https://developer.mozilla.org/en-US/docs/
 
 ```typescript
 interface Options extends Omit<RequestInit, 'body'> {
-  baseUrl?: string
+  baseURL?: string
   url?: string
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'PATCH'
   params?: Record<string, any>
@@ -246,11 +248,11 @@ interface Options extends Omit<RequestInit, 'body'> {
   timeout?: number
   responseType?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text' | null | false
   throwHttpError?: boolean
-  onResponseProgress?: ProgressCallback
+  onDownloadProgress?: ProgressCallback
 }
 ```
 
-- **baseUrl**: The url prefix of the request will be concatenated with the url in `resreq[method]()` to form a complete request address, the default value is ' '
+- **baseURL**: The url prefix of the request will be concatenated with the url in `resreq[method]()` to form a complete request address, the default value is ' '
 - **url**: Request url, the default value is ' '
 - **method**：Request method, the default value is 'GET'
 - **params**: The params of a `resreq.get` request are automatically added to the url via the [new URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) method
@@ -259,7 +261,7 @@ interface Options extends Omit<RequestInit, 'body'> {
 - **timeout**: Specify the number of milliseconds of time before the request, if the time is exceeded the request will be aborted, the default value is 1000ms
 - **responseType**: Set how the response will be parsed, if not set or set to false, the [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) instance will be returned, the default value is undefined
 - **throwHttpError**: If true, a status code outside of 200-299 will throw an error, the default value is false
-- **onResponseProgress**: The download progress hook, which depends on the [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream), does not currently work in node
+- **onDownloadProgress**: The download progress hook, which depends on the [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream), does not currently work in node
 
 To avoid adding complexity, `new Resreq(options)` and `resreq[method](options)`, in which 'options' are of the same type
 
@@ -267,7 +269,7 @@ The options defined in `new Resreq(options)` will take effect globally, `resreq[
 
 - **headers**: The headers defined in the method are merged into the global headers
 
-- **onResponseProgress**: Defining onResponseProgress in a method and the global onResponseProgress are both retained.
+- **onDownloadProgress**: Defining onDownloadProgress in a method and the global onDownloadProgress are both retained.
 
 **ReqInit**
 
@@ -282,9 +284,10 @@ interface ReqInit extends Omit<RequestInit, 'body'> {
   responseType?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text' | null | false
   throwHttpError?: boolean
   body?: BodyInit | Record<string, any>
-  onResponseProgress?: ProgressCallback
+  onDownloadProgress?: ProgressCallback
 }
 ```
+
 > **Note**
 > That its 'headers' behave differently than 'Options.headers', which overrides the global headers
 
@@ -298,7 +301,7 @@ interface ResInit extends ResponseInit {
   timeout?: number
   responseType?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text' | null | false
   throwHttpError?: boolean
-  onResponseProgress?: ProgressCallback
+  onDownloadProgress?: ProgressCallback
 }
 ```
 

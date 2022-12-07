@@ -6,6 +6,8 @@ import responseHandler from './middleware/responseHandler'
 import timeoutHandler from './middleware/timeoutHandler'
 import responseTypeHandler from './middleware/responseTypeHandler'
 import mergeHeaders from './helpers/mergeHeaders'
+import Req from './Req'
+import Res from './Res'
 
 export default class Resreq {
   options: Options
@@ -13,7 +15,7 @@ export default class Resreq {
   constructor(options: Options = {}) {
     this.options = {
       ...options,
-      baseUrl: options.baseUrl || '',
+      baseURL: options.baseURL || '',
       timeout: options.timeout || 1000,
       throwHttpError: options.throwHttpError || false
     }
@@ -30,38 +32,38 @@ export default class Resreq {
     return this
   }
 
-  async request<T>(options: Options): Promise<T> {
+  async request<T = Res>(options: Options): Promise<T> {
     const dispatch = compose(...this.middleware)
-    return dispatch(fetch)({
+    return dispatch(fetch as any as (req: Req) => Promise<Res>)({
       ...this.options,
       ...options,
       headers: mergeHeaders(this.options.headers || {}, options?.headers || {}),
-      onResponseProgress: options.onResponseProgress,
-      [ON_GLOBAL_RESPONSE_PROGRESS]: this.options.onResponseProgress
-    })
+      onDownloadProgress: options.onDownloadProgress,
+      [ON_GLOBAL_RESPONSE_PROGRESS]: this.options.onDownloadProgress
+    } as unknown as Req) as unknown as T
   }
 
-  async get<T>(url: string, options?: Options): Promise<T> {
+  async get<T = Res>(url: string, options?: Options): Promise<T> {
     return await this.request({ ...options, url, method: 'GET' })
   }
 
-  async post<T>(url: string, options?: Options): Promise<T> {
+  async post<T = Res>(url: string, options?: Options): Promise<T> {
     return await this.request({ ...options, url, method: 'POST' })
   }
 
-  async put<T>(url: string, options?: Options): Promise<T> {
+  async put<T = Res>(url: string, options?: Options): Promise<T> {
     return await this.request({ ...options, url, method: 'PUT' })
   }
 
-  async delete<T>(url: string, options?: Options): Promise<T> {
+  async delete<T = Res>(url: string, options?: Options): Promise<T> {
     return await this.request({ ...options, url, method: 'DELETE' })
   }
 
-  async patch<T>(url: string, options?: Options): Promise<T> {
+  async patch<T = Res>(url: string, options?: Options): Promise<T> {
     return await this.request({ ...options, url, method: 'PATCH' })
   }
 
-  async head<T>(url: string, options?: Options): Promise<T> {
+  async head<T = Res>(url: string, options?: Options): Promise<T> {
     return await this.request({ ...options, url, method: 'HEAD' })
   }
 }
