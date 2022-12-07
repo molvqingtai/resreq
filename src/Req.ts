@@ -1,5 +1,5 @@
 import { ReqInit, ProgressCallback, ResponseType } from './types'
-import { ON_GLOBAL_RESPONSE_PROGRESS, ABORT_CONTROLLER } from './constants'
+import { ON_GLOBAL_DOWNLOAD_PROGRESS, ABORT_CONTROLLER } from './constants'
 import isJsonBody from './helpers/isJsonBody'
 import pkg from '../package.json'
 
@@ -10,7 +10,7 @@ export default class Req extends Request {
   readonly throwHttpError: boolean;
   readonly [ABORT_CONTROLLER]: AbortController
   readonly onDownloadProgress?: ProgressCallback;
-  readonly [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
+  readonly [ON_GLOBAL_DOWNLOAD_PROGRESS]?: ProgressCallback
 
   constructor(request: Req, init: ReqInit | Request) {
     let body = (init.body ?? request.body) as BodyInit
@@ -84,8 +84,8 @@ export default class Req extends Request {
     this.responseType = (init as ReqInit).responseType ?? request.responseType
     this.throwHttpError = (init as ReqInit).throwHttpError ?? request.throwHttpError
     this.onDownloadProgress = (init as ReqInit).onDownloadProgress ?? request.onDownloadProgress
-    this[ON_GLOBAL_RESPONSE_PROGRESS] =
-      (init as ReqInit)[ON_GLOBAL_RESPONSE_PROGRESS] ?? request[ON_GLOBAL_RESPONSE_PROGRESS]
+    this[ON_GLOBAL_DOWNLOAD_PROGRESS] =
+      (init as ReqInit)[ON_GLOBAL_DOWNLOAD_PROGRESS] ?? request[ON_GLOBAL_DOWNLOAD_PROGRESS]
     this[ABORT_CONTROLLER] = abortController
     signal.addEventListener('abort', () => abortController.abort())
   }

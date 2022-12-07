@@ -1,5 +1,5 @@
 import { Options, Middleware } from './types'
-import { ON_GLOBAL_RESPONSE_PROGRESS } from './constants'
+import { ON_GLOBAL_DOWNLOAD_PROGRESS } from './constants'
 import compose from './helpers/compose'
 import requestHandler from './middleware/requestHandler'
 import responseHandler from './middleware/responseHandler'
@@ -39,7 +39,7 @@ export default class Resreq {
       ...options,
       headers: mergeHeaders(this.options.headers || {}, options?.headers || {}),
       onDownloadProgress: options.onDownloadProgress,
-      [ON_GLOBAL_RESPONSE_PROGRESS]: this.options.onDownloadProgress
+      [ON_GLOBAL_DOWNLOAD_PROGRESS]: this.options.onDownloadProgress
     } as unknown as Req) as unknown as T
   }
 

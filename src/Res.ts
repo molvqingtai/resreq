@@ -1,5 +1,5 @@
 import { ResInit, ResponseType, ProgressCallback } from './types'
-import { ON_GLOBAL_RESPONSE_PROGRESS, ABORT_CONTROLLER } from './constants'
+import { ON_GLOBAL_DOWNLOAD_PROGRESS, ABORT_CONTROLLER } from './constants'
 import isJsonBody from './helpers/isJsonBody'
 
 export default class Res extends Response {
@@ -9,7 +9,7 @@ export default class Res extends Response {
   readonly throwHttpError: boolean
   readonly abortController: AbortController
   readonly onDownloadProgress?: ProgressCallback;
-  readonly [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
+  readonly [ON_GLOBAL_DOWNLOAD_PROGRESS]?: ProgressCallback
 
   constructor(response: Res, init: ResInit | Response) {
     let body = (init.body ?? response.body) as BodyInit
@@ -41,7 +41,7 @@ export default class Res extends Response {
     this.throwHttpError = (init as ResInit).throwHttpError ?? response.throwHttpError
     this.abortController = (init as ResInit)[ABORT_CONTROLLER] ?? response.abortController
     this.onDownloadProgress = (init as ResInit).onDownloadProgress ?? response.onDownloadProgress
-    this[ON_GLOBAL_RESPONSE_PROGRESS] =
-      (init as ResInit)[ON_GLOBAL_RESPONSE_PROGRESS] ?? response[ON_GLOBAL_RESPONSE_PROGRESS]
+    this[ON_GLOBAL_DOWNLOAD_PROGRESS] =
+      (init as ResInit)[ON_GLOBAL_DOWNLOAD_PROGRESS] ?? response[ON_GLOBAL_DOWNLOAD_PROGRESS]
   }
 }
