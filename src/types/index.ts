@@ -1,4 +1,4 @@
-import type { ON_GLOBAL_RESPONSE_PROGRESS, ABORT_CONTROLLER } from '../constants'
+import type { ON_GLOBAL_DOWNLOAD_PROGRESS, ABORT_CONTROLLER } from '../constants'
 import type Req from '../Req'
 import type Res from '../Res'
 
@@ -10,7 +10,7 @@ export interface ResInit extends ResponseInit {
   throwHttpError?: boolean
   [ABORT_CONTROLLER]?: AbortController
   onDownloadProgress?: ProgressCallback
-  [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
+  [ON_GLOBAL_DOWNLOAD_PROGRESS]?: ProgressCallback
 }
 
 export interface ReqInit extends Omit<RequestInit, 'body'> {
@@ -25,7 +25,7 @@ export interface ReqInit extends Omit<RequestInit, 'body'> {
   throwHttpError?: boolean
   body?: BodyInit | Record<string, any>
   onDownloadProgress?: ProgressCallback
-  [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
+  [ON_GLOBAL_DOWNLOAD_PROGRESS]?: ProgressCallback
 }
 
 export type Next = (req: Req) => Promise<Res>

@@ -1,5 +1,5 @@
 import { Middleware, ProgressCallback } from '../types'
-import { ON_GLOBAL_RESPONSE_PROGRESS } from '../constants'
+import { ON_GLOBAL_DOWNLOAD_PROGRESS } from '../constants'
 import Res from '../Res'
 
 const createReadableStream = (response: Response, onDownloadProgress: ProgressCallback) =>
@@ -65,7 +65,7 @@ const responseHandler: Middleware = (next) => async (req) => {
 
   createReadableStream(response.clone(), (...args) => {
     req.onDownloadProgress?.(...args)
-    req[ON_GLOBAL_RESPONSE_PROGRESS]?.(...args)
+    req[ON_GLOBAL_DOWNLOAD_PROGRESS]?.(...args)
   })
 
   /**
@@ -75,7 +75,7 @@ const responseHandler: Middleware = (next) => async (req) => {
    */
   //  const readableStream = createReadableStream(response.clone(), (...args) => {
   //   response.onDownloadProgress?.(...args)
-  //   req[ON_GLOBAL_RESPONSE_PROGRESS]?.(...args)
+  //   req[ON_GLOBAL_DOWNLOAD_PROGRESS]?.(...args)
   // })
   // req[ABORT_CONTROLLER].signal.addEventListener('abort', () => {
   //   debugger

@@ -26,7 +26,7 @@ pnpm install resreq
 import Resreq from 'https://esm.sh/resreq'
 ```
 
-If you use it in [Node](https://nodejs.org/en/), you need to add some polyfill
+If you are using a lower version of [node](https://nodejs.org/en/), you may need to add some polyfill
 
 ```typescript
 import fetch, { Headers, Request, Response } from 'node-fetch'
