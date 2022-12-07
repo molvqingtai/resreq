@@ -4,7 +4,7 @@ import Resreq from '../src'
 import sleep from './helpers/sleep'
 
 describe('Test hooks', () => {
-  test('Use global onResponseProgress hook', async () => {
+  test('Use global onDownloadProgress hook', async () => {
     const server = new Server()
     const { origin: baseURL } = await server.listen()
     const progressInfo: any[][] = []
@@ -17,7 +17,7 @@ describe('Test hooks', () => {
     const resreq = new Resreq({
       baseURL,
       responseType: 'text',
-      onResponseProgress(progress, chunk) {
+      onDownloadProgress(progress, chunk) {
         progressInfo.push([progress, new TextDecoder().decode(chunk)])
       }
     })
@@ -34,7 +34,7 @@ describe('Test hooks', () => {
     server.close()
   })
 
-  test('Use local onResponseProgress hook', async () => {
+  test('Use local onDownloadProgress hook', async () => {
     const server = new Server()
     const { origin: baseURL } = await server.listen()
     const progressInfo: any[][] = []
@@ -51,7 +51,7 @@ describe('Test hooks', () => {
 
     const res = await resreq.request({
       url: '/api',
-      onResponseProgress(progress, chunk) {
+      onDownloadProgress(progress, chunk) {
         progressInfo.push([progress, new TextDecoder().decode(chunk)])
       }
     })
@@ -81,12 +81,12 @@ describe('Test hooks', () => {
     const resreq = new Resreq({
       baseURL,
       responseType: 'text',
-      onResponseProgress: () => globalProgressCallback()
+      onDownloadProgress: () => globalProgressCallback()
     })
 
     await resreq.request({
       url: '/api',
-      onResponseProgress: () => localProgressCallback()
+      onDownloadProgress: () => localProgressCallback()
     })
 
     expect(globalProgressCallback).toBeCalledTimes(2)

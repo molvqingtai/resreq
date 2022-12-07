@@ -38,8 +38,8 @@ export default class Resreq {
       ...this.options,
       ...options,
       headers: mergeHeaders(this.options.headers || {}, options?.headers || {}),
-      onResponseProgress: options.onResponseProgress,
-      [ON_GLOBAL_RESPONSE_PROGRESS]: this.options.onResponseProgress
+      onDownloadProgress: options.onDownloadProgress,
+      [ON_GLOBAL_RESPONSE_PROGRESS]: this.options.onDownloadProgress
     } as unknown as Req) as unknown as T
   }
 

@@ -71,8 +71,7 @@ const resreq = new Resreq()
 
 const abortController = new AbortController()
 
-resreq
-  .get('https://example.com/api', {
+resreq.get('https://example.com/api', {
     signal: abortController.signal
   })
   .catch((error) => {
@@ -121,7 +120,7 @@ const resreq = new Resreq({
   timeout: 10000,
   responseType: 'json',
   throwHttpError: true,
-  onResponseProgress(progress, chunk) {
+  onDownloadProgress(progress, chunk) {
     console.log(progress, chunk)
   }
 })
@@ -141,7 +140,7 @@ const res = await resreq.request({
   method: 'GET',
   params: { foo: 'bar' },
   throwHttpError: true,
-  onResponseProgress(progress, chunk) {
+  onDownloadProgress(progress, chunk) {
     console.log(progress, chunk)
   }
 })
@@ -161,7 +160,7 @@ const resreq = new Resreq({
 const res = await resreq.get('/api', {
   params: { foo: 'bar' },
   throwHttpError: true,
-  onResponseProgress(progress, chunk) {
+  onDownloadProgress(progress, chunk) {
     console.log(progress, chunk)
   }
 })
@@ -249,7 +248,7 @@ interface Options extends Omit<RequestInit, 'body'> {
   timeout?: number
   responseType?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text' | null | false
   throwHttpError?: boolean
-  onResponseProgress?: ProgressCallback
+  onDownloadProgress?: ProgressCallback
 }
 ```
 
@@ -262,7 +261,7 @@ interface Options extends Omit<RequestInit, 'body'> {
 - **timeout**: Specify the number of milliseconds of time before the request, if the time is exceeded the request will be aborted, the default value is 1000ms
 - **responseType**: Set how the response will be parsed, if not set or set to false, the [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) instance will be returned, the default value is undefined
 - **throwHttpError**: If true, a status code outside of 200-299 will throw an error, the default value is false
-- **onResponseProgress**: The download progress hook, which depends on the [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream), does not currently work in node
+- **onDownloadProgress**: The download progress hook, which depends on the [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream), does not currently work in node
 
 To avoid adding complexity, `new Resreq(options)` and `resreq[method](options)`, in which 'options' are of the same type
 
@@ -270,7 +269,7 @@ The options defined in `new Resreq(options)` will take effect globally, `resreq[
 
 - **headers**: The headers defined in the method are merged into the global headers
 
-- **onResponseProgress**: Defining onResponseProgress in a method and the global onResponseProgress are both retained.
+- **onDownloadProgress**: Defining onDownloadProgress in a method and the global onDownloadProgress are both retained.
 
 **ReqInit**
 
@@ -285,7 +284,7 @@ interface ReqInit extends Omit<RequestInit, 'body'> {
   responseType?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text' | null | false
   throwHttpError?: boolean
   body?: BodyInit | Record<string, any>
-  onResponseProgress?: ProgressCallback
+  onDownloadProgress?: ProgressCallback
 }
 ```
 
@@ -302,7 +301,7 @@ interface ResInit extends ResponseInit {
   timeout?: number
   responseType?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text' | null | false
   throwHttpError?: boolean
-  onResponseProgress?: ProgressCallback
+  onDownloadProgress?: ProgressCallback
 }
 ```
 

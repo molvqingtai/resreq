@@ -200,7 +200,7 @@ describe('Test request methods', () => {
 
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
-    expect(res.data).toEqual({ message: 'ok' })
+    expect(res.data).toEqual('message=ok')
 
     server.close()
   })

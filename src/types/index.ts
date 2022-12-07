@@ -9,7 +9,7 @@ export interface ResInit extends ResponseInit {
   responseType?: ResponseType
   throwHttpError?: boolean
   [ABORT_CONTROLLER]?: AbortController
-  onResponseProgress?: ProgressCallback
+  onDownloadProgress?: ProgressCallback
   [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
 }
 
@@ -24,7 +24,7 @@ export interface ReqInit extends Omit<RequestInit, 'body'> {
   responseType?: ResponseType
   throwHttpError?: boolean
   body?: BodyInit | Record<string, any>
-  onResponseProgress?: ProgressCallback
+  onDownloadProgress?: ProgressCallback
   [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
 }
 

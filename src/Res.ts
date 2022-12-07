@@ -8,7 +8,7 @@ export default class Res extends Response {
   readonly responseType?: ResponseType
   readonly throwHttpError: boolean
   readonly abortController: AbortController
-  readonly onResponseProgress?: ProgressCallback;
+  readonly onDownloadProgress?: ProgressCallback;
   readonly [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
 
   constructor(response: Res, init: ResInit | Response) {
@@ -40,7 +40,7 @@ export default class Res extends Response {
     this.responseType = (init as ResInit).responseType ?? response.responseType
     this.throwHttpError = (init as ResInit).throwHttpError ?? response.throwHttpError
     this.abortController = (init as ResInit)[ABORT_CONTROLLER] ?? response.abortController
-    this.onResponseProgress = (init as ResInit).onResponseProgress ?? response.onResponseProgress
+    this.onDownloadProgress = (init as ResInit).onDownloadProgress ?? response.onDownloadProgress
     this[ON_GLOBAL_RESPONSE_PROGRESS] =
       (init as ResInit)[ON_GLOBAL_RESPONSE_PROGRESS] ?? response[ON_GLOBAL_RESPONSE_PROGRESS]
   }

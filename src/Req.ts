@@ -9,7 +9,7 @@ export default class Req extends Request {
   readonly responseType?: ResponseType
   readonly throwHttpError: boolean;
   readonly [ABORT_CONTROLLER]: AbortController
-  readonly onResponseProgress?: ProgressCallback;
+  readonly onDownloadProgress?: ProgressCallback;
   readonly [ON_GLOBAL_RESPONSE_PROGRESS]?: ProgressCallback
 
   constructor(request: Req, init: ReqInit | Request) {
@@ -83,7 +83,7 @@ export default class Req extends Request {
     this.timeout = (init as ReqInit).timeout ?? request.timeout
     this.responseType = (init as ReqInit).responseType ?? request.responseType
     this.throwHttpError = (init as ReqInit).throwHttpError ?? request.throwHttpError
-    this.onResponseProgress = (init as ReqInit).onResponseProgress ?? request.onResponseProgress
+    this.onDownloadProgress = (init as ReqInit).onDownloadProgress ?? request.onDownloadProgress
     this[ON_GLOBAL_RESPONSE_PROGRESS] =
       (init as ReqInit)[ON_GLOBAL_RESPONSE_PROGRESS] ?? request[ON_GLOBAL_RESPONSE_PROGRESS]
     this[ABORT_CONTROLLER] = abortController
