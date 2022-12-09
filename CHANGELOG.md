@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/molvqingtai/resreq/compare/v1.2.0...v1.2.1) (2022-12-09)
+
+
+### Bug Fixes
+
+* `Response.headers` should not be synchronized with `Request.headers` ([69c5a42](https://github.com/molvqingtai/resreq/commit/69c5a42cf71e4aa26ccf3536ec32cccb2479cc65))
+
 # [1.2.0](https://github.com/molvqingtai/resreq/compare/v1.1.4...v1.2.0) (2022-12-07)
 
 
