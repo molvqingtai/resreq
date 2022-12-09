@@ -202,18 +202,17 @@ describe('Test overload options', () => {
           'X-Custom-Header': 'bar'
         }
       })
+      expect(_req.headers.get('Content-Type')).toBe(null)
+      expect(_req.headers.get('X-Custom-Header')).toBe('bar')
       return await next(_req)
     })
 
-    const value = (
-      await resreq.get<Response>('/api', {
-        headers: {
-          'X-Custom-Header': 'foo'
-        }
-      })
-    ).headers.get('X-Custom-Header')
-
-    expect(value).toBe('bar')
+    await resreq.get<Response>('/api', {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Custom-Header': 'foo'
+      }
+    })
 
     server.close()
   })
@@ -265,9 +264,6 @@ describe('Test overload options', () => {
     })
 
     resreq.use((next) => async (req) => {
-      const formData = new FormData()
-      formData.append('message', 'no')
-
       const res = await next(req)
 
       return new Res(res, {
@@ -286,6 +282,37 @@ describe('Test overload options', () => {
     })
 
     expect(res.data).toEqual({ message: 'no' })
+
+    server.close()
+  })
+
+  test('Overload response body error', async () => {
+    const server = new Server()
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
+
+    server.post('/api', (ctx) => {
+      ctx.body = {
+        code: 200,
+        data: ctx.request.body
+      }
+    })
+
+    resreq.use((next) => async (req) => {
+      const formData = new FormData()
+      formData.append('message', 'no')
+
+      const res = await next(req)
+      const errorObject = {
+        content: {}
+      }
+      errorObject.content = errorObject
+      return new Res(res, {
+        body: errorObject
+      })
+    })
+
+    await expect(resreq.post('/api')).rejects.toThrowError(/valid JSON object/)
 
     server.close()
   })

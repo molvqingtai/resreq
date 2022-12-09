@@ -41,7 +41,7 @@ describe('Test request methods', () => {
     const resreq = new Resreq({ baseURL, responseType: 'json' })
 
     server.get('/api', (ctx) => {
-      ctx.body = 'foobar'
+      ctx.body = ctx.request.query.message
     })
     const res: string = await resreq.request({
       url: '/api',
@@ -51,7 +51,7 @@ describe('Test request methods', () => {
         message: 'ok'
       }
     })
-    expect(res).toEqual('foobar')
+    expect(res).toEqual('ok')
 
     server.close()
   })
@@ -153,6 +153,33 @@ describe('Test request methods', () => {
     expect(res.code).toBe(200)
     expect(res.message).toEqual('ok')
     expect(res.data).toEqual({ message: 'ok' })
+
+    server.close()
+  })
+
+  test('POST request with JSON error', async () => {
+    const server = new Server()
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'json' })
+
+    server.post('/api', (ctx) => {
+      ctx.body = {
+        code: 200,
+        message: 'ok',
+        data: ctx.request.body
+      }
+    })
+
+    const errorObject = {
+      content: {}
+    }
+    errorObject.content = errorObject
+
+    const res = resreq.post('/api', {
+      body: errorObject
+    })
+
+    await expect(res).rejects.toThrowError(/valid JSON object/)
 
     server.close()
   })
@@ -347,14 +374,18 @@ describe('Test request methods', () => {
       ctx.status = 200
     })
 
-    const res: Response = await resreq.get('/api', {
+    resreq.use((next) => async (req) => {
+      expect(req.headers.get('Content-Type')).toBe('application/json')
+      expect(req.headers.get('X-Custom-Header')).toBe('foo/bar')
+
+      return await next(req)
+    })
+
+    await resreq.get('/api', {
       headers: {
-        'Content-Type': 'text/plain',
         'X-Custom-Header': 'foo/bar'
       }
     })
-    expect(res.headers.get('Content-Type')).toBe('text/plain')
-    expect(res.headers.get('X-Custom-Header')).toBe('foo/bar')
 
     server.close()
   })
