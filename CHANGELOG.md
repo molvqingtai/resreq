@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/molvqingtai/resreq/compare/v1.2.1...v1.3.0) (2022-12-09)
+
+
+### Features
+
+* expose `mergeHeaders` ([f5d5b09](https://github.com/molvqingtai/resreq/commit/f5d5b0929a77e4eb4a5de3400d7acfa99ac01926))
+
 ## [1.2.1](https://github.com/molvqingtai/resreq/compare/v1.2.0...v1.2.1) (2022-12-09)
 
 
