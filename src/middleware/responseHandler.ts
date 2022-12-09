@@ -83,9 +83,9 @@ const responseHandler: Middleware = (next) => async (req) => {
   // })
 
   /**
-   * Filter out request.body (not iterable) by destructuring it, and keep headers
+   * Filter out request.body (not iterable) by destructuring it
    */
-  return new Res(response as Res, { ...req, headers: req.headers })
+  return new Res(response as Res, { ...req })
 }
 
 export default responseHandler

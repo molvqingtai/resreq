@@ -18,7 +18,6 @@ export default class Res extends Response {
      * Automatically process the mock json entered by the user.
      */
     if (body && isJsonBody(body)) {
-      headers.set('Content-Type', 'application/json')
       try {
         body = JSON.stringify(body)
       } catch (error) {
@@ -26,15 +25,12 @@ export default class Res extends Response {
       }
     }
 
-    if ((globalThis.FormData && body instanceof FormData) || body instanceof URLSearchParams) {
-      headers.delete('Content-Type')
-    }
-
     super(body, {
       status: init.status ?? response.status,
       statusText: init.statusText ?? response.statusText,
       headers
     })
+
     this.meta = (init as ResInit).meta ?? response.meta
     this.timeout = (init as ResInit).timeout ?? response.timeout
     this.responseType = (init as ResInit).responseType ?? response.responseType
