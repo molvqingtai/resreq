@@ -78,7 +78,7 @@ resreq.get('https://example.com/api', {
     console.log(error) // Abort error
   })
 
-abortController.abort() // request abort
+abortController.abort() // request cancel
 ```
 
 **Use Middlewares**
@@ -170,7 +170,28 @@ console.log(res)
 
 **resreq.use(middleware:Middleware)**
 
-Rewriting request headers using middleware
+Add  headers using middleware
+
+```typescript
+import Resreq, { Middleware } from 'resreq'
+
+const resreq = new Resreq({
+  baseURL: 'https://example.com'
+})
+
+// Implement a middleware that set token
+const setAccessToken: Middleware = (next) => (req) => {
+  req.headers.set('Access-Token', 'foo-bar')
+  return next(req)
+}
+
+// Register middleware
+resreq.use(setAccessToken)
+
+await resreq.get('/api')
+```
+
+Rewriting  headers using middleware
 
 ```typescript
 import Resreq, { Req } from 'resreq'
@@ -180,27 +201,31 @@ const resreq = new Resreq({
 })
 
 resreq.use((next) => async (req) => {
+  
   // Create a new request with Req
   const _req = new Req(req, {
     headers: {
       'X-Custom-Header': 'bar'
     }
   })
+  
+  console.log(_req.headers.get('Content-Type')) // null
+  console.log(_req.headers.get('X-Custom-Header')) // bar
+
   return await next(_req)
 })
 
-const res: Response = await resreq.get('/api', {
+await resreq.get('/api', {
   headers: {
+    'Content-Type': 'application/json',
     'X-Custom-Header': 'foo'
   }
 })
-
-console.log(res.headers.get('X-Custom-Header')) // bar
 ```
 
-**Req(req:Req, init?:ReqInit)**
+**Req(request: Req, init: ReqInit | Request)**
 
-**Res(res:Res, init?:ResInit)**
+**Res(response: Res, init: ResInit | Response)**
 
 In the middleware, use `new Req()` and `new Res()` to rewrite the request and response
 
@@ -208,24 +233,26 @@ In the middleware, use `new Req()` and `new Res()` to rewrite the request and re
 import Resreq, { Req, Res } from 'resreq'
 
 const resreq = new Resreq({
-  baseURL: 'https://example.com'
+  baseURL: 'https://example.com',
 })
 
 resreq.use((next) => async (req) => {
+  
   const _req = new Req(req, {
     url: 'https://example.com/mock'
   })
 
   const res = await next(_req)
   return new Res(res, {
+    body: { foo: 'bar' }
     status: 200,
-    statusText: 'mock success'
   })
 })
 
 const res: Response = await resreq.get('/api')
 
 console.log(res.status) // 200
+console.log(await res.json()) // { foo: 'bar' }
 ```
 
 > **Warning**
@@ -281,7 +308,7 @@ interface ReqInit extends Omit<RequestInit, 'body'> {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'PATCH'
   meta?: Record<string, any>
   timeout?: number
-  responseType?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text' | null | false
+  responseType?: ResponseType
   throwHttpError?: boolean
   body?: BodyInit | Record<string, any>
   onDownloadProgress?: ProgressCallback
@@ -298,8 +325,9 @@ ResInit extends from the [ResponseInit](https://developer.mozilla.org/en-US/docs
 ```typescript
 interface ResInit extends ResponseInit {
   meta?: Record<string, any>
+  body?: BodyInit | Record<string, any> | null
   timeout?: number
-  responseType?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text' | null | false
+  responseType?: ResponseType
   throwHttpError?: boolean
   onDownloadProgress?: ProgressCallback
 }
