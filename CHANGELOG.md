@@ -1,3 +1,17 @@
+# [1.2.0](https://github.com/molvqingtai/resreq/compare/v1.1.4...v1.2.0) (2022-12-07)
+
+
+### Features
+
+* refactoring `Res` and `Req`, refining the `compose` type definition ([4499be8](https://github.com/molvqingtai/resreq/commit/4499be8c7875ed62b527bd82698d06703f28ef66))
+
+
+### Performance Improvements
+
+* `isJsonBody` security boundary ([647e305](https://github.com/molvqingtai/resreq/commit/647e305a4969ed566c8eec7e512364d5bc884bd9))
+* change ON_GLOBAL_RESPONSE_PROGRESS -> ON_GLOBAL_DOWNLOAD_PROGRESS ([0d925ae](https://github.com/molvqingtai/resreq/commit/0d925aea88c1a8e24b3498529445eda8513ee496))
+* onResponseProgress -> onDownloadProgress ([e127f3c](https://github.com/molvqingtai/resreq/commit/e127f3c06cc1ff0bbed04bb8b424e0c3485e430c))
+
 ## [1.1.4](https://github.com/molvqingtai/resreq/compare/v1.1.3...v1.1.4) (2022-08-25)
 
 
