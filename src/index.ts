@@ -1,4 +1,4 @@
-import { Options, Middleware } from './types'
+import { type Options, type Middleware } from './types'
 import { ON_GLOBAL_DOWNLOAD_PROGRESS } from './constants'
 import compose from './helpers/compose'
 import requestHandler from './middleware/requestHandler'
@@ -6,12 +6,13 @@ import responseHandler from './middleware/responseHandler'
 import timeoutHandler from './middleware/timeoutHandler'
 import responseTypeHandler from './middleware/responseTypeHandler'
 import mergeHeaders from './helpers/mergeHeaders'
-import Req from './Req'
-import Res from './Res'
+import type Req from './Req'
+import type Res from './Res'
 
 export default class Resreq {
   options: Options
   middleware: Middleware[] = [responseTypeHandler, requestHandler, timeoutHandler, responseHandler]
+
   constructor(options: Options = {}) {
     this.options = {
       ...options,
@@ -19,6 +20,15 @@ export default class Resreq {
       timeout: options.timeout || 1000,
       throwHttpError: options.throwHttpError || false
     }
+
+    this.use = this.use.bind(this)
+    this.request = this.request.bind(this)
+    this.get = this.get.bind(this)
+    this.post = this.post.bind(this)
+    this.put = this.put.bind(this)
+    this.delete = this.delete.bind(this)
+    this.patch = this.patch.bind(this)
+    this.head = this.head.bind(this)
   }
 
   use(middleware: Middleware | Middleware[]) {

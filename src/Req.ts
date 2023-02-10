@@ -1,4 +1,4 @@
-import { ReqInit, ProgressCallback, ResponseType } from './types'
+import { type ReqInit, type ProgressCallback, type ResponseType } from './types'
 import { ON_GLOBAL_DOWNLOAD_PROGRESS, ABORT_CONTROLLER } from './constants'
 import isJsonBody from './helpers/isJsonBody'
 import { version } from '../package.json'
@@ -87,6 +87,8 @@ export default class Req extends Request {
     this[ON_GLOBAL_DOWNLOAD_PROGRESS] =
       (init as ReqInit)[ON_GLOBAL_DOWNLOAD_PROGRESS] ?? request[ON_GLOBAL_DOWNLOAD_PROGRESS]
     this[ABORT_CONTROLLER] = abortController
-    signal.addEventListener('abort', () => abortController.abort())
+    signal.addEventListener('abort', () => {
+      abortController.abort()
+    })
   }
 }
