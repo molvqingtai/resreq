@@ -1,4 +1,4 @@
-import { ResInit, ResponseType, ProgressCallback } from './types'
+import { type ResInit, type ResponseType, type ProgressCallback } from './types'
 import { ON_GLOBAL_DOWNLOAD_PROGRESS, ABORT_CONTROLLER } from './constants'
 import isJsonBody from './helpers/isJsonBody'
 

@@ -1,4 +1,4 @@
-import { Middleware } from '../types'
+import { type Middleware } from '../types'
 import { ABORT_CONTROLLER } from '../constants'
 
 /**
@@ -17,7 +17,9 @@ const timeoutHandler: Middleware = (next) => async (req) => {
     void next(req)
       .then(resolve)
       .catch(reject)
-      .then(() => clearTimeout(timer))
+      .then(() => {
+        clearTimeout(timer)
+      })
   })
 
   /**

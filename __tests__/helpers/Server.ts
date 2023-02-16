@@ -1,7 +1,7 @@
-import Koa, { DefaultState, DefaultContext } from 'koa'
+import Koa, { type DefaultState, type DefaultContext } from 'koa'
 import cors from '@koa/cors'
 import body from 'koa-body'
-import Router, { Middleware } from '@koa/router'
+import Router, { type Middleware } from '@koa/router'
 
 interface ServerInfo {
   port: number

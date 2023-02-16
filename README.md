@@ -288,7 +288,7 @@ interface Options extends Omit<RequestInit, 'body'> {
 - **timeout**: Specify the number of milliseconds of time before the request, if the time is exceeded the request will be aborted, the default value is 1000ms
 - **responseType**: Set how the response will be parsed, if not set or set to false, the [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) instance will be returned, the default value is undefined
 - **throwHttpError**: If true, a status code outside of 200-299 will throw an error, the default value is false
-- **onDownloadProgress**: The download progress hook, which depends on the [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream), does not currently work in node
+- **onDownloadProgress**: The download progress hook, which depends on the [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream), polyfill is required in lower versions of node
 
 To avoid adding complexity, `new Resreq(options)` and `resreq[method](options)`, in which 'options' are of the same type
 

@@ -1,4 +1,4 @@
-import { Middleware, ProgressCallback } from '../types'
+import { type Middleware, type ProgressCallback } from '../types'
 import { ON_GLOBAL_DOWNLOAD_PROGRESS } from '../constants'
 import Res from '../Res'
 
@@ -14,10 +14,11 @@ const createReadableStream = (response: Response, onDownloadProgress: ProgressCa
 
       /**
        * node-fetch does not support the getReader
-       * so OnResponseProgress will not work
+       * so onDownloadProgress will not work
        */
       if (!response.body?.getReader) {
-        return controller.close()
+        controller.close()
+        return
       }
       const reader = response.body.getReader()
 
@@ -33,7 +34,10 @@ const createReadableStream = (response: Response, onDownloadProgress: ProgressCa
       )
       const read = async () => {
         const { done, value } = await reader.read()
-        if (done) return controller.close()
+        if (done) {
+          controller.close()
+          return
+        }
 
         carry += value.byteLength
 

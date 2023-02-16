@@ -1,4 +1,4 @@
-import { Middleware, Options } from '../types'
+import { type Middleware, type Options } from '../types'
 import Req from '../Req'
 
 interface OverrideReqInit extends Options {
