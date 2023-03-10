@@ -53,28 +53,28 @@ export default class Resreq {
     } as unknown as Req) as unknown as T
   }
 
-  async get<T = Res>(url: string, options?: Options): Promise<T> {
-    return await this.request({ ...options, url, method: 'GET' })
+  async get<T = Res>(url: string, options?: Options) {
+    return await this.request<T>({ ...options, url, method: 'GET' })
   }
 
-  async post<T = Res>(url: string, options?: Options): Promise<T> {
-    return await this.request({ ...options, url, method: 'POST' })
+  async post<T = Res>(url: string, options?: Options) {
+    return await this.request<T>({ ...options, url, method: 'POST' })
   }
 
-  async put<T = Res>(url: string, options?: Options): Promise<T> {
-    return await this.request({ ...options, url, method: 'PUT' })
+  async put<T = Res>(url: string, options?: Options) {
+    return await this.request<T>({ ...options, url, method: 'PUT' })
   }
 
-  async delete<T = Res>(url: string, options?: Options): Promise<T> {
-    return await this.request({ ...options, url, method: 'DELETE' })
+  async delete<T = Res>(url: string, options?: Options) {
+    return await this.request<T>({ ...options, url, method: 'DELETE' })
   }
 
-  async patch<T = Res>(url: string, options?: Options): Promise<T> {
-    return await this.request({ ...options, url, method: 'PATCH' })
+  async patch<T = Res>(url: string, options?: Options) {
+    return await this.request<T>({ ...options, url, method: 'PATCH' })
   }
 
-  async head<T = Res>(url: string, options?: Options): Promise<T> {
-    return await this.request({ ...options, url, method: 'HEAD' })
+  async head<T = Res>(url: string, options?: Options) {
+    return await this.request<T>({ ...options, url, method: 'HEAD' })
   }
 }
 

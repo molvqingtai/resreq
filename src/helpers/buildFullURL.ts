@@ -10,7 +10,7 @@ import isAbsoluteURL from './isAbsoluteURL'
  * reference: https://github.com/axios/axios/blob/v1.x/lib/core/buildFullPath.js
  */
 const buildFullURL = (baseURL: string = '', pathURL: string = '', params: Record<string, any> = {}) => {
-  const url = isAbsoluteURL(pathURL) ? pathURL : cleanURL(`${baseURL}/${pathURL}`)
+  const url = cleanURL(isAbsoluteURL(pathURL) ? pathURL : `${baseURL}/${pathURL}`)
   return assembleURL(url, params)
 }
 
