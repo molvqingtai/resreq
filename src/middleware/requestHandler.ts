@@ -1,5 +1,6 @@
 import { type Middleware, type Options } from '../types'
 import Req from '../Req'
+import buildFullURL from 'src/helpers/buildFullURL'
 
 interface OverrideReqInit extends Options {
   url: string
@@ -16,15 +17,7 @@ const requestHandler: Middleware = (next) => async (_req) => {
    */
   const req = _req as OverrideReqInit
 
-  const url = Object.entries(req.params || {})
-    .reduce(
-      (acc: URL, [key, value]) => {
-        acc.searchParams.append(key, value)
-        return acc
-      },
-      req.baseURL ? new URL(req.url, req.baseURL) : new URL(req.url)
-    )
-    .toString()
+  const url = buildFullURL(req.baseURL, req.url, req.params)
 
   /**
    * Create a Req with the specified url
