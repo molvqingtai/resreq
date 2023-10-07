@@ -23,8 +23,6 @@ describe('Test hooks', () => {
     })
 
     const res = await resreq.request({ url: '/api' })
-    // TODO fix callback execution time
-    await sleep(1000)
     expect(progressInfo).toEqual([
       [{ ratio: 0, carry: 0, total: 0 }, ''],
       [{ ratio: 50, carry: 3, total: 6 }, 'foo'],
@@ -56,8 +54,6 @@ describe('Test hooks', () => {
         progressInfo.push([progress, new TextDecoder().decode(chunk)])
       }
     })
-    // TODO fix callback execution time
-    await sleep(1000)
     expect(progressInfo).toEqual([
       [{ ratio: 0, carry: 0, total: 0 }, ''],
       [{ ratio: 50, carry: 3, total: 6 }, 'foo'],
@@ -90,8 +86,6 @@ describe('Test hooks', () => {
       url: '/api',
       onDownloadProgress: () => localProgressCallback()
     })
-    // TODO fix callback execution time
-    await sleep(1000)
     expect(globalProgressCallback).toBeCalledTimes(2)
     expect(localProgressCallback).toBeCalledTimes(2)
 
