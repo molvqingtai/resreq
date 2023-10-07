@@ -1,6 +1,6 @@
 {
   "name": "resreq",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Fetch-based onion model http client.",
   "main": "dist/index.js",
   "type": "module",

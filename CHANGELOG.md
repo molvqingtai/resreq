@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/molvqingtai/resreq/compare/v1.4.1...v1.4.2) (2023-10-07)
+
+
+### Bug Fixes
+
+* fix download progress & use `abort(reason)` for timeout ([d6cef88](https://github.com/molvqingtai/resreq/commit/d6cef888287ca10eb2ea35272b5906cd7ca80a74))
+
 ## [1.4.1](https://github.com/molvqingtai/resreq/compare/v1.4.0...v1.4.1) (2023-03-10)
 
 
