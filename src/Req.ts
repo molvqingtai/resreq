@@ -48,7 +48,6 @@ export default class Req extends Request {
     if ((globalThis.FormData && body instanceof FormData) || body instanceof URLSearchParams) {
       headers.delete('Content-Type')
     }
-
     const abortController = new AbortController()
 
     /**
