@@ -1,0 +1,26 @@
+{
+  "language_overrides": {
+    "JavaScript": {
+      "format_on_save": {
+        "external": {
+          "command": "node_modules/.bin/prettier",
+          "arguments": [
+            "--stdin-filepath",
+            "{buffer_path}"
+          ]
+        }
+      }
+    },
+    "TypeScript": {
+      "format_on_save": {
+        "external": {
+          "command": "node_modules/.bin/prettier",
+          "arguments": [
+            "--stdin-filepath",
+            "{buffer_path}"
+          ]
+        }
+      }
+    }
+  }
+}
