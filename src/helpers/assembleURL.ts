@@ -1,7 +1,7 @@
 /**
  * Add params to the URL
  */
-const assembleURL = (url: string, params: Record<string, any>) => {
+const assembleURL = (url: string, params: Record<string, string>) => {
   return Object.entries(params)
     .reduce((url, [key, value]) => {
       url.searchParams.append(key, value)
