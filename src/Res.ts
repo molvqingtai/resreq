@@ -3,7 +3,7 @@ import { ON_GLOBAL_DOWNLOAD_PROGRESS, ABORT_CONTROLLER } from './constants'
 import isJsonBody from './helpers/isJsonBody'
 
 export default class Res extends Response {
-  readonly meta?: Record<string, any>
+  readonly meta: Record<string, any>
   readonly timeout: number
   readonly responseType?: ResponseType
   readonly throwHttpError: boolean

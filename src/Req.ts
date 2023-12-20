@@ -4,7 +4,7 @@ import isJsonBody from './helpers/isJsonBody'
 import { version } from '../package.json'
 
 export default class Req extends Request {
-  readonly meta?: Record<string, any>
+  readonly meta: Record<string, any>
   readonly timeout: number
   readonly responseType?: ResponseType
   readonly throwHttpError: boolean;

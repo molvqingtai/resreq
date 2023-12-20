@@ -17,8 +17,8 @@ export default class Resreq {
     this.options = {
       ...options,
       baseURL: options.baseURL || '',
-      timeout: options.timeout || 1000,
-      throwHttpError: options.throwHttpError || false
+      timeout: options.timeout ?? 1000,
+      throwHttpError: options.throwHttpError ?? false
     }
 
     this.use = this.use.bind(this)
@@ -47,6 +47,7 @@ export default class Resreq {
     return dispatch(fetch as any as (req: Req) => Promise<Res>)({
       ...this.options,
       ...options,
+      meta: { ...this.options.meta, ...options.meta },
       headers: mergeHeaders(this.options.headers || {}, options?.headers || {}),
       onDownloadProgress: options.onDownloadProgress,
       [ON_GLOBAL_DOWNLOAD_PROGRESS]: this.options.onDownloadProgress
