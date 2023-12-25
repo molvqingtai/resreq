@@ -389,4 +389,43 @@ describe('Test request methods', () => {
 
     server.close()
   })
+
+  test('Merge meta', async () => {
+    const server = new Server()
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({
+      baseURL,
+      meta: {
+        foo: 'foo',
+        bar: 'bar'
+      }
+    })
+
+    server.get('/api', (ctx) => {
+      ctx.status = 200
+    })
+
+    resreq.use((next) => async (req) => {
+      expect(req.meta.foo).toBe('override foo')
+      expect(req.meta.bar).toBe('bar')
+      expect(req.meta.foobar).toBe('added foobar')
+
+      const res = await next(req)
+
+      expect(res.meta.foo).toBe('override foo')
+      expect(res.meta.bar).toBe('bar')
+      expect(res.meta.foobar).toBe('added foobar')
+
+      return res
+    })
+
+    await resreq.get('/api', {
+      meta: {
+        foo: 'override foo',
+        foobar: 'added foobar'
+      }
+    })
+
+    server.close()
+  })
 })

@@ -26,7 +26,7 @@ pnpm install resreq
 import Resreq from 'https://esm.sh/resreq'
 ```
 
-If you are using a lower version of [node](https://nodejs.org/en/), you may need to add some polyfill
+If you are using a lower version of [node](https://nodejs.org/en/), you may need to add some polyfill.
 
 ```typescript
 import fetch, { Headers, Request, Response } from 'node-fetch'
@@ -112,7 +112,7 @@ console.log(res)
 
 **new Resreq(options?:Options)**
 
-Create a resreq instance and configure the global options
+Create a resreq instance and configure the global options.
 
 ```typescript
 const resreq = new Resreq({
@@ -128,7 +128,7 @@ const resreq = new Resreq({
 
 **resreq.request(options?:Options)**
 
-Use ''request'' to send the request and configure the options
+Use ''request'' to send the request and configure the options.
 
 ```typescript
 const resreq = new Resreq({
@@ -170,7 +170,7 @@ console.log(res)
 
 **resreq.use(middleware:Middleware)**
 
-Add  headers using middleware
+Add  headers using middleware.
 
 ```typescript
 import Resreq, { Middleware } from 'resreq'
@@ -191,7 +191,7 @@ resreq.use(setAccessToken)
 await resreq.get('/api')
 ```
 
-Rewriting  headers using middleware
+Rewriting  headers using middleware.
 
 ```typescript
 import Resreq, { Req } from 'resreq'
@@ -227,7 +227,7 @@ await resreq.get('/api', {
 
 **Res(response: Res, init: ResInit | Response)**
 
-In the middleware, use `new Req()` and `new Res()` to rewrite the request and response
+In the middleware, use `new Req()` and `new Res()` to rewrite the request and response.
 
 ```typescript
 import Resreq, { Req, Res } from 'resreq'
@@ -256,7 +256,7 @@ console.log(await res.json()) // { foo: 'bar' }
 ```
 
 > **Warning**
-> Req & Res extends from [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response); to create a new request and response in the middleware, use Req & Res
+> Req & Res extends from [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response); to create a new request and response in the middleware, use `new Req()` and `new Res()`.
 
 ### Interfaces
 
@@ -279,28 +279,30 @@ interface Options extends Omit<RequestInit, 'body'> {
 }
 ```
 
-- **baseURL**: The url prefix of the request will be concatenated with the url in `resreq[method]()` to form a complete request address, the default value is ' '
-- **url**: Request url, the default value is ' '
-- **method**：Request method, the default value is 'GET'
-- **params**: The params of a `resreq.get` request are automatically added to the url via the [new URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) method
-- **body**: Based on [BodyInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request), and adding `Record<string, any>`, which means you can pass `object` directly, instead of `JSON.stringify(object)`, which will automatically add `Content-Type: application/json` request headers
-- **meta**: The extra information that needs to be carried in the request is not really sent to the server, but it can be obtained in the `res.meta`
-- **timeout**: Specify the number of milliseconds of time before the request, if the time is exceeded the request will be aborted, the default value is 1000ms
-- **responseType**: Set how the response will be parsed, if not set or set to false, the [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) instance will be returned, the default value is undefined
-- **throwHttpError**: If true, a status code outside of 200-299 will throw an error, the default value is false
-- **onDownloadProgress**: The download progress hook, which depends on the [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream), polyfill is required in lower versions of node
+- **baseURL**: The url prefix of the request will be concatenated with the url in `resreq[method]()` to form a complete request address, the default value is ' '.
+- **url**: Request url, the default value is ' '.
+- **method**：Request method, the default value is 'GET'.
+- **params**: The params of a `resreq.get` request are automatically added to the url via the [new URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) method.
+- **body**: Based on [BodyInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request), and adding `Record<string, any>`, which means you can pass `object` directly, instead of `JSON.stringify(object)`, which will automatically add `Content-Type: application/json` request headers.
+- **meta**: The extra information that needs to be carried in the request is not really sent to the server, but it can be obtained in  `Res.meta` and `Req.meta`.
+- **timeout**: Specify the number of milliseconds of time before the request, if the time is exceeded the request will be aborted, the default value is 1000ms.
+- **responseType**: Set how the response will be parsed, if not set or set to false, the [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response) instance will be returned, the default value is undefined.
+- **throwHttpError**: If true, a status code outside of 200-299 will throw an error, the default value is false.
+- **onDownloadProgress**: The download progress hook, which depends on the [ReadableStream API](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream), polyfill is required in lower versions of node.
 
-To avoid adding complexity, `new Resreq(options)` and `resreq[method](options)`, in which 'options' are of the same type
+To avoid adding complexity, `new Resreq(options)` and `resreq[method](options)`, in which 'options' are of the same type.
 
-The options defined in `new Resreq(options)` will take effect globally, `resreq[method](options)`, will override the "global options", except for the following options which will not be overridden
+The options defined in `new Resreq(options)` will take effect globally, `resreq[method](options)`, will override the "global options", except for the following options which will not be overridden.
 
-- **headers**: The headers defined in the method are merged into the global headers
+- **meta**: The meta within the method will be shallow merged with the global meta.
+
+- **headers**: The headers defined in the method are merged into the global headers.
 
 - **onDownloadProgress**: Defining onDownloadProgress in a method and the global onDownloadProgress are both retained.
 
 **ReqInit**
 
-Options extends from the [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) type with some additional properties
+Options extends from the [RequestInit](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) type with some additional properties.
 
 ```typescript
 interface ReqInit extends Omit<RequestInit, 'body'> {
@@ -316,11 +318,11 @@ interface ReqInit extends Omit<RequestInit, 'body'> {
 ```
 
 > **Note**
-> That its 'headers' behave differently than 'Options.headers', which overrides the global headers
+> That its 'headers' behave differently than 'Options.headers', which overrides the global headers.
 
 **ResInit**
 
-ResInit extends from the [ResponseInit](https://developer.mozilla.org/en-US/docs/Web/API/Response/Response) type with some additional properties
+ResInit extends from the [ResponseInit](https://developer.mozilla.org/en-US/docs/Web/API/Response/Response) type with some additional properties.
 
 ```typescript
 interface ResInit extends ResponseInit {
@@ -335,7 +337,7 @@ interface ResInit extends ResponseInit {
 
 **Middleware**
 
-The middleware must call next(req) to return a promise
+The middleware must call next(req) to return a promise.
 
 ```typescript
 type Middleware = (next: Next) => (req: Req) => Promise<Res>
@@ -345,11 +347,11 @@ type Middleware = (next: Next) => (req: Req) => Promise<Res>
 
 Some of the inspiration for this project came from their.
 
-- [Axios](https://github.com/axios/axios): Promise based HTTP client for the browser and node.js
-- [Ky](https://github.com/sindresorhus/ky): Tiny & elegant JavaScript HTTP client based on the browser Fetch API
-- [Redux](https://github.com/reduxjs/redux): Predictable state container for JavaScript apps
-- [Koa](https://github.com/koajs/koa): Next generation web framework for node.js
+- [Axios](https://github.com/axios/axios): Promise based HTTP client for the browser and node.js.
+- [Ky](https://github.com/sindresorhus/ky): Tiny & elegant JavaScript HTTP client based on the browser Fetch API.
+- [Redux](https://github.com/reduxjs/redux): Predictable state container for JavaScript apps.
+- [Koa](https://github.com/koajs/koa): Next generation web framework for node.js.
 
 ### License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/molvqingtai/resreq/blob/master/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/molvqingtai/resreq/blob/master/LICENSE) file for details.

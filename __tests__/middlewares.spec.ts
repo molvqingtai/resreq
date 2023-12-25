@@ -170,19 +170,19 @@ describe('Test overload options', () => {
     resreq.use((next) => async (req) => {
       const _req = new Req(req, {
         meta: {
-          key: 2
+          foo: 'foobar'
         }
       })
       return await next(_req)
     })
 
-    await expect(
-      resreq.get('/api', {
-        meta: {
-          key: 1
-        }
-      })
-    ).resolves.toHaveProperty('meta', { key: 2 })
+    const res = await resreq.get('/api', {
+      meta: {
+        foo: 'foo',
+        bar: 'bar'
+      }
+    })
+    expect(res.meta).toEqual({ foo: 'foobar' })
 
     server.close()
   })
