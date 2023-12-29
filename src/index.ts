@@ -1,4 +1,4 @@
-import { type Options, type Middleware } from './types'
+import { type Options, type Middleware, type Next } from './types'
 import { ON_GLOBAL_DOWNLOAD_PROGRESS } from './constants'
 import compose from './helpers/compose'
 import requestHandler from './middleware/requestHandler'
@@ -11,7 +11,7 @@ import type Res from './Res'
 
 export default class Resreq {
   options: Options
-  middleware: Middleware[] = [responseTypeHandler, requestHandler, timeoutHandler, responseHandler]
+  middlewares: Middleware[] = [responseTypeHandler, requestHandler, timeoutHandler, responseHandler]
 
   constructor(options: Options = {}) {
     this.options = {
@@ -36,15 +36,25 @@ export default class Resreq {
      * Users can modify request.timeout through middleware, so it must be placed last
      * The response is first handled by the responseHandler，so it must be placed last
      */
-    const responseHandler = this.middleware.pop()!
-    const timeoutHandler = this.middleware.pop()!
-    this.middleware = [...this.middleware, ...[middleware].flat(), timeoutHandler, responseHandler]
+    const responseHandler = this.middlewares.pop()!
+    const timeoutHandler = this.middlewares.pop()!
+    this.middlewares = [...this.middlewares, ...[middleware].flat(), responseHandler, timeoutHandler]
     return this
   }
 
   async request<T = Res>(options: Options): Promise<T> {
-    const dispatch = compose(...this.middleware)
-    return dispatch(fetch as any as (req: Req) => Promise<Res>)({
+    /**
+     * Every time you enter\exit the middleware,
+     * clone Res/Req to ensure that the Res/Req obtained in the middle is a copy.
+     */
+    // const middlewares = this.middlewares.map<Middleware>((m) => (n) => async (r) => {
+    //   const req = typeof r?.clone === 'function' ? r.clone() : r
+    //   const res = await m(n)(req)
+    //   return typeof res?.clone === 'function' ? res.clone() : res
+    // })
+
+    const dispatch = compose(...this.middlewares)
+    return dispatch(fetch as unknown as Next)({
       ...this.options,
       ...options,
       meta: { ...this.options.meta, ...options.meta },

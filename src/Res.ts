@@ -40,4 +40,8 @@ export default class Res extends Response {
     this[ON_GLOBAL_DOWNLOAD_PROGRESS] =
       (init as ResInit)[ON_GLOBAL_DOWNLOAD_PROGRESS] ?? response[ON_GLOBAL_DOWNLOAD_PROGRESS]
   }
+
+  clone() {
+    return new Res(this, super.clone())
+  }
 }
