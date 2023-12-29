@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/molvqingtai/resreq/compare/v1.4.2...v1.4.3) (2023-12-25)
+
+
+### Bug Fixes
+
+* `option.meta` incorrectly overwrites the global meta ([343ae17](https://github.com/molvqingtai/resreq/commit/343ae17f2a2cf8e708707fa48237ed9b5867671b))
+
 ## [1.4.2](https://github.com/molvqingtai/resreq/compare/v1.4.1...v1.4.2) (2023-10-07)
 
 
