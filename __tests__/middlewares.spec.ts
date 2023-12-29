@@ -382,4 +382,71 @@ describe('Test overload options', () => {
 
     server.close()
   })
+
+  test('Request retry', async () => {
+    const server = new Server()
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL, responseType: 'text' })
+
+    server.post('/api', async (ctx) => {
+      ctx.body = {
+        code: 401
+      }
+    })
+
+    server.post('/retry', async (ctx) => {
+      ctx.body = ctx.request.body
+    })
+
+    resreq.use((next) => async (req) => {
+      const body = req.clone().body
+      const res = await next(req)
+      const { code }: { code: number } = await res.json()
+      if (code === 401) {
+        const _resreq = new Resreq({ baseURL })
+        const _res = await _resreq.post('/retry', {
+          body: body!,
+          headers: {
+            'Content-Type': req.headers.get('Content-Type')!
+          }
+        })
+        return _res
+      } else {
+        return res
+      }
+    })
+
+    const res: string = await resreq.post('/api', {
+      body: 'foobar'
+    })
+    expect(res).toBe('foobar')
+
+    server.close()
+  })
+
+  test('Cancel request', async () => {
+    const server = new Server()
+    const { origin: baseURL } = await server.listen()
+    const resreq = new Resreq({ baseURL })
+
+    server.get('/api', async (ctx) => {
+      ctx.status = 200
+    })
+
+    const abortController = new AbortController()
+
+    resreq.use((next) => async (req) => {
+      abortController.abort()
+      return await next(req)
+    })
+
+    const res = resreq.request({
+      url: '/api',
+      signal: abortController.signal
+    })
+
+    await expect(res).rejects.toThrowError(/abort/)
+
+    server.close()
+  })
 })

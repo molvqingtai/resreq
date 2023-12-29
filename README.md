@@ -257,6 +257,8 @@ console.log(await res.json()) // { foo: 'bar' }
 
 > **Warning**
 > Req & Res extends from [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request) and [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response); to create a new request and response in the middleware, use `new Req()` and `new Res()`.
+>
+> To access the contents of the `body` in the current middleware, please use `Res.clone()` to ensure that the res received by the next middleware are unlocked.
 
 ### Interfaces
 

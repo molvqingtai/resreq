@@ -22,7 +22,7 @@ const requestHandler: Middleware = (next) => async (_req) => {
   /**
    * Create a Req with the specified url
    */
-  return await next(new Req(req as Req, { url }))
+  return (await next(new Req(req as Req, { url }))).clone()
 }
 
 export default requestHandler

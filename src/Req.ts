@@ -76,8 +76,12 @@ export default class Req extends Request {
       referrerPolicy: init.referrerPolicy ?? request.referrerPolicy,
       integrity: init.integrity ?? request.integrity,
       keepalive: init.keepalive ?? request.keepalive,
-      signal: abortController.signal
+      signal: abortController.signal,
+      // Fix: https://github.com/nodejs/node/issues/46221
+      // @ts-expect-error https://github.com/microsoft/TypeScript/issues/56882
+      duplex: init.duplex ?? request.duplex ?? 'half'
     })
+
     this.meta = (init as ReqInit).meta ?? request.meta
     this.timeout = (init as ReqInit).timeout ?? request.timeout
     this.responseType = (init as ReqInit).responseType ?? request.responseType
@@ -89,5 +93,9 @@ export default class Req extends Request {
     signal.addEventListener('abort', () => {
       abortController.abort()
     })
+  }
+
+  clone() {
+    return new Req(this, super.clone())
   }
 }

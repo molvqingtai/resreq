@@ -84,7 +84,7 @@ const responseHandler: Middleware = (next) => async (req) => {
   /**
    * Filter out request.body (not iterable) by destructuring it
    */
-  return new Res(response.clone() as Res, { ...req })
+  return new Res(response as Res, { ...req }).clone()
 }
 
 export default responseHandler
