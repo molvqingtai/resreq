@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/molvqingtai/resreq/compare/v1.4.3...v1.5.0) (2023-12-29)
+
+
+### Features
+
+* when create request, add the default value of duplex and update the docs ([c293d79](https://github.com/molvqingtai/resreq/commit/c293d792c994a48d28ef2a65cdc8d1dec720fc2e))
+
 ## [1.4.3](https://github.com/molvqingtai/resreq/compare/v1.4.2...v1.4.3) (2023-12-25)
 
 
