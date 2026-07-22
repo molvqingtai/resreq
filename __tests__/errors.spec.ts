@@ -1,6 +1,6 @@
-import { test, describe, expect } from 'vitest'
+import { test, describe, expect, vi } from 'vitest'
 import Server from './helpers/Server'
-import Resreq from '../src'
+import Resreq, { HTTPError } from '../src'
 import sleep from './helpers/sleep'
 
 describe('Test errors', () => {
@@ -26,6 +26,26 @@ describe('Test errors', () => {
     await expect(resreq.get('/404')).rejects.toThrowError(/404/)
 
     server.close()
+  })
+
+  test('Http error preserves the response when statusText is empty', async () => {
+    const body = { error: 'Invalid request' }
+    const fetchMock = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(JSON.stringify(body), { status: 400 }))
+
+    try {
+      const resreq = new Resreq({ throwHttpError: true })
+      const error = await resreq.get('https://example.com/api').catch((error: unknown) => error)
+
+      expect(error).toBeInstanceOf(HTTPError)
+      if (!(error instanceof HTTPError)) throw error
+      expect(error.response.status).toBe(400)
+      expect(error.response.statusText).toBe('')
+      await expect(error.response.json()).resolves.toEqual(body)
+    } finally {
+      fetchMock.mockRestore()
+    }
   })
 
   test('Http error with connect', async () => {
