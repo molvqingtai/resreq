@@ -90,6 +90,7 @@ export default class Resreq {
 }
 
 export * from './types'
+export { default as HTTPError } from './HTTPError'
 export { default as Req } from './Req'
 export { default as Res } from './Res'
 export { default as mergeHeaders } from './helpers/mergeHeaders'

@@ -1,6 +1,7 @@
 import { type Middleware, type ProgressCallback } from '../types'
 import { ABORT_CONTROLLER, ON_GLOBAL_DOWNLOAD_PROGRESS } from '../constants'
 import Res from '../Res'
+import HTTPError from '../HTTPError'
 
 const createReadableStream = (response: Response, onDownloadProgress: ProgressCallback) =>
   new ReadableStream({
@@ -62,9 +63,10 @@ const createReadableStream = (response: Response, onDownloadProgress: ProgressCa
 const responseHandler: Middleware = (next) => async (req) => {
   // Here is the native Response
   const response: Response = await next(req)
+  const createRes = () => new Res(response as Res, { ...req }).clone()
 
   if (req.throwHttpError && !response.ok) {
-    throw new Error(`${response.status} ${response.statusText}`)
+    throw new HTTPError(createRes())
   }
 
   /**
@@ -84,7 +86,7 @@ const responseHandler: Middleware = (next) => async (req) => {
   /**
    * Filter out request.body (not iterable) by destructuring it
    */
-  return new Res(response as Res, { ...req }).clone()
+  return createRes()
 }
 
 export default responseHandler
